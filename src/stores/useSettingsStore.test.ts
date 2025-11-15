@@ -97,7 +97,10 @@ describe('useSettingsStore', () => {
         it('should load settings from storage', async () => {
             const storedSettings: AppSettings = {
                 theme: 'light',
+                themeId: 'mono',
                 background: '#abcdef',
+                backgroundPattern: 'dots',
+                layoutWidth: 'full',
                 userName: 'TestUser',
                 searchEngine: 'bing',
             };

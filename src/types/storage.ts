@@ -23,6 +23,7 @@ export type LayoutWidth = 'compact' | 'standard' | 'wide' | 'full';
 
 export interface AppSettings {
     theme: 'dark' | 'light';
+    themeId: string;
     background: string | null;
     backgroundPattern: BackgroundPattern;
     layoutWidth: LayoutWidth;

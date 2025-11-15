@@ -4,9 +4,11 @@ import { create } from 'zustand';
 import type { AppSettings, LayoutWidth } from '../types/storage';
 import { storage } from '../services/storage';
 import type { BackgroundPattern } from '../lib/backgroundPatterns';
+import { applyThemeColors } from '../lib/themes';
 
 interface SettingsStore {
     theme: 'dark' | 'light';
+    themeId: string;
     background: string | null;
     backgroundPattern: BackgroundPattern;
     layoutWidth: LayoutWidth;
@@ -14,6 +16,7 @@ interface SettingsStore {
     searchEngine: 'google' | 'bing' | 'duckduckgo' | 'yahoo';
     isInitialized: boolean;
     setTheme: (theme: 'dark' | 'light') => Promise<void>;
+    setThemeId: (themeId: string) => Promise<void>;
     setBackground: (background: string | null) => Promise<void>;
     setBackgroundPattern: (pattern: BackgroundPattern) => Promise<void>;
     setLayoutWidth: (width: LayoutWidth) => Promise<void>;
@@ -25,6 +28,7 @@ interface SettingsStore {
 // Default settings for new users
 const DEFAULT_SETTINGS: AppSettings = {
     theme: 'dark',
+    themeId: 'mono',
     background: null,
     backgroundPattern: 'dots',
     layoutWidth: 'full',
@@ -47,6 +51,7 @@ function applyTheme(theme: 'dark' | 'light'): void {
 
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
     theme: DEFAULT_SETTINGS.theme,
+    themeId: DEFAULT_SETTINGS.themeId,
     background: DEFAULT_SETTINGS.background,
     backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
     layoutWidth: DEFAULT_SETTINGS.layoutWidth,
@@ -65,14 +70,42 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             // Apply theme to document root
             applyTheme(theme);
 
+            // Apply theme colors
+            const { themeId } = get();
+            applyThemeColors(themeId, theme);
+
             // Get current settings and update theme
-            const { background, backgroundPattern, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { themeId: currentThemeId, background, backgroundPattern, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, themeId: currentThemeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
         } catch (error) {
             console.error('Failed to update theme:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Set theme ID preference and persist to Chrome Storage
+     */
+    setThemeId: async (themeId: string) => {
+        try {
+            // Update local state first for immediate UI feedback
+            set({ themeId });
+
+            // Apply theme colors
+            const { theme } = get();
+            applyThemeColors(themeId, theme);
+
+            // Get current settings and update themeId
+            const { theme: currentTheme, background, backgroundPattern, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme: currentTheme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+
+            // Persist to Chrome Storage
+            await storage.set('settings', updatedSettings);
+        } catch (error) {
+            console.error('Failed to update theme ID:', error);
             throw error;
         }
     },
@@ -86,8 +119,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ background });
 
             // Get current settings and update background
-            const { theme, backgroundPattern, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, backgroundPattern, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -106,8 +139,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ backgroundPattern });
 
             // Get current settings and update pattern
-            const { theme, background, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -126,8 +159,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ layoutWidth });
 
             // Get current settings and update width
-            const { theme, background, backgroundPattern, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, backgroundPattern, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -157,8 +190,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ userName });
 
             // Get current settings and update userName
-            const { theme, background, backgroundPattern, layoutWidth, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, backgroundPattern, layoutWidth, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -177,8 +210,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ searchEngine });
 
             // Get current settings and update searchEngine
-            const { theme, background, backgroundPattern, layoutWidth, userName } = get();
-            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, backgroundPattern, layoutWidth, userName } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -197,6 +230,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
 
             if (storedSettings && typeof storedSettings === 'object') {
                 const theme = storedSettings.theme || DEFAULT_SETTINGS.theme;
+                const themeId = storedSettings.themeId || DEFAULT_SETTINGS.themeId;
                 const background = storedSettings.background !== undefined
                     ? storedSettings.background
                     : DEFAULT_SETTINGS.background;
@@ -207,14 +241,18 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                     : DEFAULT_SETTINGS.userName;
                 const searchEngine = storedSettings.searchEngine || DEFAULT_SETTINGS.searchEngine;
 
-                set({ theme, background, backgroundPattern, layoutWidth, userName, searchEngine, isInitialized: true });
+                set({ theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine, isInitialized: true });
 
                 // Apply theme to document root
                 applyTheme(theme);
+
+                // Apply theme colors
+                applyThemeColors(themeId, theme);
             } else {
                 // Use default settings and persist them
                 set({
                     theme: DEFAULT_SETTINGS.theme,
+                    themeId: DEFAULT_SETTINGS.themeId,
                     background: DEFAULT_SETTINGS.background,
                     backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
                     layoutWidth: DEFAULT_SETTINGS.layoutWidth,
@@ -225,6 +263,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
 
                 // Apply default theme
                 applyTheme(DEFAULT_SETTINGS.theme);
+                applyThemeColors(DEFAULT_SETTINGS.themeId, DEFAULT_SETTINGS.theme);
 
                 await storage.set('settings', DEFAULT_SETTINGS);
             }
@@ -233,6 +272,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             // Fall back to defaults on error
             set({
                 theme: DEFAULT_SETTINGS.theme,
+                themeId: DEFAULT_SETTINGS.themeId,
                 background: DEFAULT_SETTINGS.background,
                 backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
                 layoutWidth: DEFAULT_SETTINGS.layoutWidth,
@@ -241,6 +281,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                 isInitialized: true,
             });
             applyTheme(DEFAULT_SETTINGS.theme);
+            applyThemeColors(DEFAULT_SETTINGS.themeId, DEFAULT_SETTINGS.theme);
         }
     },
 }));

@@ -139,6 +139,42 @@ export const WIDGET_LAYOUT_DEFAULTS: Record<WidgetType, WidgetLayoutDefaults> = 
         defaultW: 3,
         defaultH: 5,
     },
+    dictionary: {
+        minW: 3,
+        minH: 4,
+        defaultW: 3,
+        defaultH: 5,
+    },
+    unsplash: {
+        minW: 3,
+        minH: 3,
+        defaultW: 4,
+        defaultH: 4,
+    },
+    colorpalette: {
+        minW: 3,
+        minH: 3,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    meditation: {
+        minW: 3,
+        minH: 4,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    location: {
+        minW: 3,
+        minH: 3,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    apitester: {
+        minW: 4,
+        minH: 4,
+        defaultW: 5,
+        defaultH: 5,
+    },
 };
 
 /**

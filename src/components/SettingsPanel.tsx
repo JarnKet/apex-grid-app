@@ -18,6 +18,7 @@ import { useSettingsStore } from '../stores/useSettingsStore';
 import { getAllPatterns, type BackgroundPattern } from '../lib/backgroundPatterns';
 import type { LayoutWidth } from '../types/storage';
 import { cn } from '../lib/utils';
+import { themes } from '../lib/themes';
 
 type SettingsTab = 'personalization' | 'appearance' | 'layout';
 
@@ -39,12 +40,14 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 }) => {
     const {
         theme,
+        themeId,
         background,
         backgroundPattern,
         layoutWidth,
         userName,
         searchEngine,
         setTheme,
+        setThemeId,
         setBackground,
         setBackgroundPattern,
         setLayoutWidth,
@@ -262,6 +265,47 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
                         {activeTab === 'appearance' && (
                             <div className="space-y-6">
+                                <div className="space-y-3">
+                                    <label className="text-sm font-medium">Theme</label>
+                                    <p className="text-sm text-muted-foreground">
+                                        Choose your preferred color theme
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {themes.map((themeOption) => (
+                                            <button
+                                                key={themeOption.id}
+                                                onClick={() => setThemeId(themeOption.id)}
+                                                className={cn(
+                                                    'relative p-4 rounded-lg border-2 transition-all text-left',
+                                                    themeId === themeOption.id
+                                                        ? 'border-primary bg-primary/10'
+                                                        : 'border-border hover:border-primary/50'
+                                                )}
+                                            >
+                                                <div className="flex gap-2 mb-2">
+                                                    <div
+                                                        className="w-6 h-6 rounded border"
+                                                        style={{
+                                                            backgroundColor: themeOption.colors.light['--primary'],
+                                                        }}
+                                                    />
+                                                    <div
+                                                        className="w-6 h-6 rounded border"
+                                                        style={{
+                                                            backgroundColor: themeOption.colors.dark['--primary'],
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className="text-sm font-medium">{themeOption.name}</div>
+                                                <div className="text-xs text-muted-foreground">{themeOption.description}</div>
+                                                {themeId === themeOption.id && (
+                                                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <label className="text-sm font-medium">Dark Mode</label>
