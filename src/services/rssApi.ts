@@ -17,15 +17,32 @@ export interface RSSFeedData {
 }
 
 /**
- * Default tech news RSS feeds
+ * Tech news RSS feeds
  */
-export const DEFAULT_FEEDS = [
+export const TECH_FEEDS = [
     { name: 'Hacker News', url: 'https://news.ycombinator.com/rss' },
     { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
     { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
     { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index' },
     { name: 'Dev.to', url: 'https://dev.to/feed' },
 ];
+
+/**
+ * Finance and trading RSS feeds
+ */
+export const FINANCE_FEEDS = [
+    { name: 'Bloomberg Markets', url: 'https://feeds.bloomberg.com/markets/news.rss' },
+    { name: 'Reuters Finance', url: 'https://feeds.reuters.com/finance/markets' },
+    { name: 'CNBC Markets', url: 'https://feeds.cnbc.com/cnbc/financials/' },
+    { name: 'MarketWatch', url: 'https://feeds.marketwatch.com/marketwatch/topstories/' },
+    { name: 'Seeking Alpha', url: 'https://seekingalpha.com/feed.xml' },
+    { name: 'Crypto News', url: 'https://feeds.bloomberg.com/markets/cryptocurrency.rss' },
+];
+
+/**
+ * All available RSS feeds
+ */
+export const DEFAULT_FEEDS = [...TECH_FEEDS, ...FINANCE_FEEDS];
 
 /**
  * Fetch RSS feed and convert to JSON

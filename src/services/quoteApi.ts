@@ -70,21 +70,21 @@ async function fetchWithRetry(
 }
 
 /**
- * Fetch a random quote from Quotable.io API
+ * Fetch a random quote from ZenQuotes API (free, no API key required)
  */
 export async function fetchQuote(): Promise<Quote> {
     try {
-        const response = await fetchWithRetry('https://api.quotable.io/random');
+        const response = await fetchWithRetry('https://zenquotes.io/api/random');
         const data = await response.json();
 
-        // Validate response structure
-        if (!data.content || !data.author) {
+        // Validate response structure (ZenQuotes returns an array)
+        if (!Array.isArray(data) || !data[0] || !data[0].q || !data[0].a) {
             throw new QuoteApiError('Invalid API response structure');
         }
 
         return {
-            text: data.content,
-            author: data.author
+            text: data[0].q,
+            author: data[0].a
         };
     } catch (error) {
         // Re-throw QuoteApiError as-is

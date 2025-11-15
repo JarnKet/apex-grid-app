@@ -11,6 +11,8 @@ import {
     DialogTrigger,
 } from '../ui/Dialog';
 import { WidgetWrapper } from '../WidgetWrapper';
+import { useWidgetSize, getResponsiveTextSize, isCompactMode, getResponsiveButtonSize } from '../../lib/useWidgetSize';
+import { cn } from '../../lib/utils';
 
 interface PomodoroData {
     workDuration: number; // in minutes
@@ -49,9 +51,13 @@ export const PomodoroWidget: React.FC<PomodoroWidgetProps> = ({
     const [sessionsCompleted, setSessionsCompleted] = useState(0);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [isSoundMuted, setIsSoundMuted] = useState(!data.soundEnabled);
+    const { ref, size } = useWidgetSize();
 
     const intervalRef = useRef<number | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    const textSizes = getResponsiveTextSize(size);
+    const compact = isCompactMode(size);
 
     // Initialize audio
     useEffect(() => {
@@ -238,39 +244,43 @@ export const PomodoroWidget: React.FC<PomodoroWidgetProps> = ({
 
     return (
         <WidgetWrapper id={id} title="Pomodoro Timer">
-            <div className="flex flex-col h-full">
+            <div ref={ref} className="flex flex-col h-full">
                 {/* Header with mode and controls */}
-                <div className="flex items-center justify-between mb-4">
-                    <div>
-                        <h3 className={`text-sm font-medium ${getModeColor()}`}>
-                            {getModeLabel()}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                            Session {sessionsCompleted + 1}
-                        </p>
+                {!compact && (
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 className={cn(textSizes.small, "font-medium", getModeColor())}>
+                                {getModeLabel()}
+                            </h3>
+                            <p className={cn(textSizes.small, "text-muted-foreground")}>
+                                Session {sessionsCompleted + 1}
+                            </p>
+                        </div>
+                        <div className="flex gap-1">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => setIsSoundMuted(!isSoundMuted)}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onTouchStart={(e) => e.stopPropagation()}
+                                title={isSoundMuted ? 'Unmute' : 'Mute'}
+                            >
+                                {isSoundMuted ? (
+                                    <VolumeX className="h-4 w-4" />
+                                ) : (
+                                    <Volume2 className="h-4 w-4" />
+                                )}
+                            </Button>
+                            <PomodoroSettings
+                                data={data}
+                                isOpen={settingsOpen}
+                                onOpenChange={setSettingsOpen}
+                                onSave={handleSettingsSave}
+                            />
+                        </div>
                     </div>
-                    <div className="flex gap-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => setIsSoundMuted(!isSoundMuted)}
-                            title={isSoundMuted ? 'Unmute' : 'Mute'}
-                        >
-                            {isSoundMuted ? (
-                                <VolumeX className="h-4 w-4" />
-                            ) : (
-                                <Volume2 className="h-4 w-4" />
-                            )}
-                        </Button>
-                        <PomodoroSettings
-                            data={data}
-                            isOpen={settingsOpen}
-                            onOpenChange={setSettingsOpen}
-                            onSave={handleSettingsSave}
-                        />
-                    </div>
-                </div>
+                )}
 
                 {/* Timer Display */}
                 <div className="flex-1 flex flex-col items-center justify-center">
@@ -312,28 +322,31 @@ export const PomodoroWidget: React.FC<PomodoroWidgetProps> = ({
                         {!isRunning ? (
                             <Button
                                 onClick={handleStart}
+                                size={getResponsiveButtonSize(size)}
                                 className="gap-2"
                             >
-                                <Play className="h-4 w-4" />
-                                Start
+                                <Play className={textSizes.icon} />
+                                {!compact && "Start"}
                             </Button>
                         ) : (
                             <Button
                                 onClick={handlePause}
                                 variant="secondary"
+                                size={getResponsiveButtonSize(size)}
                                 className="gap-2"
                             >
-                                <Pause className="h-4 w-4" />
-                                Pause
+                                <Pause className={textSizes.icon} />
+                                {!compact && "Pause"}
                             </Button>
                         )}
                         <Button
                             onClick={handleReset}
                             variant="outline"
+                            size={getResponsiveButtonSize(size)}
                             className="gap-2"
                         >
-                            <RotateCcw className="h-4 w-4" />
-                            Reset
+                            <RotateCcw className={textSizes.icon} />
+                            {!compact && "Reset"}
                         </Button>
                     </div>
                 </div>
@@ -343,29 +356,29 @@ export const PomodoroWidget: React.FC<PomodoroWidgetProps> = ({
                     <Button
                         variant={mode === 'work' ? 'default' : 'outline'}
                         size="sm"
-                        className="flex-1 text-xs"
+                        className={cn("flex-1", textSizes.small)}
                         onClick={() => handleModeSwitch('work')}
                         disabled={isRunning}
                     >
-                        Work
+                        {compact ? "W" : "Work"}
                     </Button>
                     <Button
                         variant={mode === 'shortBreak' ? 'default' : 'outline'}
                         size="sm"
-                        className="flex-1 text-xs"
+                        className={cn("flex-1", textSizes.small)}
                         onClick={() => handleModeSwitch('shortBreak')}
                         disabled={isRunning}
                     >
-                        Break
+                        {compact ? "S" : "Break"}
                     </Button>
                     <Button
                         variant={mode === 'longBreak' ? 'default' : 'outline'}
                         size="sm"
-                        className="flex-1 text-xs"
+                        className={cn("flex-1", textSizes.small)}
                         onClick={() => handleModeSwitch('longBreak')}
                         disabled={isRunning}
                     >
-                        Long
+                        {compact ? "L" : "Long"}
                     </Button>
                 </div>
             </div>
@@ -420,7 +433,13 @@ const PomodoroSettings: React.FC<PomodoroSettingsProps> = ({
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                >
                     <Settings className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

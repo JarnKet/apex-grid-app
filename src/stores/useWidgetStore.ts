@@ -11,20 +11,21 @@ interface WidgetStore {
     isInitialized: boolean;
     addWidget: (type: WidgetType) => void;
     removeWidget: (id: string) => void;
+    setWidgets: (widgets: Widget[]) => void;
     updateWidgetData: (id: string, data: WidgetDataSchema) => Promise<void>;
     initializeWidgets: () => Promise<void>;
 }
 
-// Default widgets for new users
+// Default widgets for new users (Developer preset)
 const DEFAULT_WIDGETS: Widget[] = [
     { id: 'clock-1', type: 'clock', enabled: true },
     { id: 'calendar-1', type: 'calendar', enabled: true },
     { id: 'todo-1', type: 'todo', enabled: true },
     { id: 'quicklinks-1', type: 'quicklinks', enabled: true },
     { id: 'quote-1', type: 'quote', enabled: true },
-    { id: 'crypto-1', type: 'crypto', enabled: true },
     { id: 'rss-1', type: 'rss', enabled: true },
     { id: 'weather-1', type: 'weather', enabled: true },
+    { id: 'pomodoro-1', type: 'pomodoro', enabled: true },
 ];
 
 /**
@@ -68,6 +69,47 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
         // Persist to storage
         storage.set('widgets', updatedWidgets).catch(error => {
             console.error('Failed to persist new widget:', error);
+        });
+
+        // Also add layout item with default constraints
+        import('../stores/useLayoutStore').then(({ useLayoutStore }) => {
+            import('../lib/widgetDefaults').then(({ getWidgetDefaults }) => {
+                const layoutStore = useLayoutStore.getState();
+                const defaults = getWidgetDefaults(type);
+
+                // Find a good position for the new widget (bottom of layout)
+                const currentLayout = layoutStore.layout;
+                const maxY = currentLayout.reduce((max, item) => Math.max(max, item.y + item.h), 0);
+
+                const newLayoutItem = {
+                    i: newWidgetId,
+                    x: 0,
+                    y: maxY,
+                    w: defaults.defaultW,
+                    h: defaults.defaultH,
+                    minW: defaults.minW,
+                    minH: defaults.minH,
+                    maxW: defaults.maxW,
+                    maxH: defaults.maxH,
+                };
+
+                const updatedLayout = [...currentLayout, newLayoutItem];
+                layoutStore.updateLayout(updatedLayout).catch(error => {
+                    console.error('Failed to persist new widget layout:', error);
+                });
+            });
+        });
+    },
+
+    /**
+     * Set widgets directly (used for presets)
+     */
+    setWidgets: (widgets: Widget[]) => {
+        set({ widgets });
+
+        // Persist to storage
+        storage.set('widgets', widgets).catch(error => {
+            console.error('Failed to persist widgets:', error);
         });
     },
 

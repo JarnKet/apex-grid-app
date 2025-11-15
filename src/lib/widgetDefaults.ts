@@ -49,12 +49,6 @@ export const WIDGET_LAYOUT_DEFAULTS: Record<WidgetType, WidgetLayoutDefaults> = 
         defaultW: 3,
         defaultH: 3,
     },
-    crypto: {
-        minW: 3,
-        minH: 2,
-        defaultW: 6,
-        defaultH: 4,
-    },
     rss: {
         minW: 4,
         minH: 3,
@@ -72,6 +66,30 @@ export const WIDGET_LAYOUT_DEFAULTS: Record<WidgetType, WidgetLayoutDefaults> = 
         minH: 4,
         defaultW: 3,
         defaultH: 4,
+    },
+    'tradingview-ticker': {
+        minW: 4,
+        minH: 2,
+        defaultW: 12,
+        defaultH: 2,
+    },
+    'tradingview-chart': {
+        minW: 4,
+        minH: 3,
+        defaultW: 8,
+        defaultH: 5,
+    },
+    'tradingview-mini': {
+        minW: 3,
+        minH: 2,
+        defaultW: 4,
+        defaultH: 3,
+    },
+    'tradingview-market': {
+        minW: 4,
+        minH: 3,
+        defaultW: 6,
+        defaultH: 5,
     },
 };
 

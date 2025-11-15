@@ -27,7 +27,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     theme: 'dark',
     background: null,
     backgroundPattern: 'dots',
-    layoutWidth: 'standard',
+    layoutWidth: 'full',
     userName: null,
     searchEngine: 'google',
 };

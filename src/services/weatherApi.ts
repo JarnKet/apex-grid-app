@@ -8,6 +8,14 @@ export interface WeatherData {
     location: string;
 }
 
+export interface ForecastDay {
+    date: string;
+    dayOfWeek: string;
+    tempMax: number;
+    tempMin: number;
+    weatherCode: number;
+}
+
 export interface WeatherDescription {
     description: string;
     icon: string;
@@ -102,6 +110,55 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
         };
     } catch (error) {
         console.error('Error fetching weather:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch 7-day weather forecast from Open-Meteo API
+ */
+export async function fetchWeatherForecast(latitude: number, longitude: number): Promise<ForecastDay[]> {
+    try {
+        const response = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch forecast: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Check if daily data exists
+        if (!data.daily || !data.daily.time) {
+            throw new Error('No forecast data available');
+        }
+
+        const forecast: ForecastDay[] = [];
+
+        // Get 7 days of forecast
+        for (let i = 0; i < 7 && i < data.daily.time.length; i++) {
+            const date = new Date(data.daily.time[i]);
+            const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+            forecast.push({
+                date: data.daily.time[i],
+                dayOfWeek,
+                tempMax: Math.round(data.daily.temperature_2m_max[i]),
+                tempMin: Math.round(data.daily.temperature_2m_min[i]),
+                weatherCode: data.daily.weather_code[i],
+            });
+        }
+
+        return forecast;
+    } catch (error) {
+        console.error('Error fetching forecast:', error);
         throw error;
     }
 }

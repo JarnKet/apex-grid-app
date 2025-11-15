@@ -5,10 +5,13 @@ import { CalendarWidget } from './widgets/CalendarWidget';
 import { TodoWidget } from './widgets/TodoWidget';
 import { QuickLinksWidget } from './widgets/QuickLinksWidget';
 import { QuoteWidget } from './widgets/QuoteWidget';
-import { CryptoWidget } from './widgets/CryptoWidget';
 import { RSSWidget } from './widgets/RSSWidget';
 import { WeatherWidget } from './widgets/WeatherWidget';
 import { PomodoroWidget } from './widgets/PomodoroWidget';
+import { TradingViewTickerWidget } from './widgets/TradingViewTickerWidget';
+import { TradingViewChartWidget } from './widgets/TradingViewChartWidget';
+import { TradingViewMiniWidget } from './widgets/TradingViewMiniWidget';
+import { TradingViewMarketWidget } from './widgets/TradingViewMarketWidget';
 
 interface WidgetRendererProps {
     widget: Widget;
@@ -46,9 +49,6 @@ const WidgetRendererComponent: React.FC<WidgetRendererProps> = ({ widget, data, 
         case 'quote':
             return <QuoteWidget {...widgetProps} />;
 
-        case 'crypto':
-            return <CryptoWidget {...widgetProps} />;
-
         case 'rss':
             return <RSSWidget {...widgetProps} />;
 
@@ -57,6 +57,18 @@ const WidgetRendererComponent: React.FC<WidgetRendererProps> = ({ widget, data, 
 
         case 'pomodoro':
             return <PomodoroWidget {...widgetProps} />;
+
+        case 'tradingview-ticker':
+            return <TradingViewTickerWidget {...widgetProps} />;
+
+        case 'tradingview-chart':
+            return <TradingViewChartWidget {...widgetProps} />;
+
+        case 'tradingview-mini':
+            return <TradingViewMiniWidget {...widgetProps} />;
+
+        case 'tradingview-market':
+            return <TradingViewMarketWidget {...widgetProps} />;
 
         default:
             // Handle unknown widget types gracefully

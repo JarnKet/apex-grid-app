@@ -74,14 +74,6 @@ const WIDGET_CATALOG: WidgetInfo[] = [
         category: 'information',
     },
     {
-        type: 'crypto',
-        label: 'Crypto & Gold',
-        description: 'Live cryptocurrency and gold prices',
-        icon: <Bitcoin className="h-6 w-6" />,
-        preview: 'Bitcoin, Ethereum, and Gold with 24h price changes',
-        category: 'finance',
-    },
-    {
         type: 'rss',
         label: 'Tech News',
         description: 'Latest tech news from RSS feeds',
@@ -96,6 +88,38 @@ const WIDGET_CATALOG: WidgetInfo[] = [
         icon: <Timer className="h-6 w-6" />,
         preview: 'Configurable Pomodoro timer with notifications and sound alerts',
         category: 'productivity',
+    },
+    {
+        type: 'tradingview-ticker',
+        label: 'Market Ticker',
+        description: 'Scrolling ticker tape of market prices',
+        icon: <Bitcoin className="h-6 w-6" />,
+        preview: 'Real-time prices for stocks, crypto, and forex',
+        category: 'finance',
+    },
+    {
+        type: 'tradingview-chart',
+        label: 'Trading Chart',
+        description: 'Advanced trading chart with indicators',
+        icon: <Bitcoin className="h-6 w-6" />,
+        preview: 'Full-featured TradingView chart with technical analysis',
+        category: 'finance',
+    },
+    {
+        type: 'tradingview-mini',
+        label: 'Symbol Overview',
+        description: 'Compact symbol price and mini chart',
+        icon: <Bitcoin className="h-6 w-6" />,
+        preview: 'Quick overview of any stock or crypto symbol',
+        category: 'finance',
+    },
+    {
+        type: 'tradingview-market',
+        label: 'Market Overview',
+        description: 'Multi-tab market overview with charts',
+        icon: <Bitcoin className="h-6 w-6" />,
+        preview: 'Indices, Forex, and Crypto markets in one widget',
+        category: 'finance',
     },
 ];
 

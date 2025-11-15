@@ -8,6 +8,7 @@ interface WidgetWrapperProps {
     id: string;
     title: string;
     children: ReactNode;
+    actions?: ReactNode;
 }
 
 interface ErrorBoundaryProps {
@@ -63,7 +64,7 @@ class WidgetErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
  * - Widget header with title and remove button
  * - Error boundary for crash isolation
  */
-const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, children }) => {
+const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, children, actions }) => {
     const { removeWidget } = useWidgetStore();
 
     const handleRemove = React.useCallback((e: React.MouseEvent) => {
@@ -83,18 +84,21 @@ const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, child
                 aria-label={`${title} widget controls`}
             >
                 <CardTitle className="text-sm font-semibold tracking-tight">{title}</CardTitle>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleRemove}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onTouchStart={(e) => e.stopPropagation()}
-                    className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    aria-label={`Remove ${title} widget`}
-                    title={`Remove ${title} widget`}
-                >
-                    <X className="h-4 w-4" aria-hidden="true" />
-                </Button>
+                <div className="flex items-center gap-1">
+                    {actions}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleRemove}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onTouchStart={(e) => e.stopPropagation()}
+                        className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        aria-label={`Remove ${title} widget`}
+                        title={`Remove ${title} widget`}
+                    >
+                        <X className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                </div>
             </CardHeader>
             <CardContent className="flex-1 overflow-auto">
                 <WidgetErrorBoundary widgetId={id}>

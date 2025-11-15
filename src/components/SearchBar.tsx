@@ -2,13 +2,15 @@ import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { useSettingsStore } from '../stores/useSettingsStore';
 import { cn } from '../lib/utils';
 import { ChevronDown } from 'lucide-react';
+import { FaGoogle, FaYahoo, FaSearch } from 'react-icons/fa';
+import { SiDuckduckgo } from 'react-icons/si';
 
 /**
  * Search engine configuration interface
  */
 interface SearchEngine {
     name: string;
-    icon: string;
+    icon: React.ReactNode;
     searchUrl: (query: string) => string;
 }
 
@@ -18,22 +20,22 @@ interface SearchEngine {
 const SEARCH_ENGINES: Record<string, SearchEngine> = {
     google: {
         name: 'Google',
-        icon: '🔍',
+        icon: <FaGoogle className="h-4 w-4" />,
         searchUrl: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`
     },
     bing: {
         name: 'Bing',
-        icon: '🅱️',
+        icon: <FaSearch className="h-4 w-4 text-blue-500" />,
         searchUrl: (q) => `https://www.bing.com/search?q=${encodeURIComponent(q)}`
     },
     duckduckgo: {
         name: 'DuckDuckGo',
-        icon: '🦆',
+        icon: <SiDuckduckgo className="h-4 w-4" />,
         searchUrl: (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}`
     },
     yahoo: {
         name: 'Yahoo',
-        icon: 'Y!',
+        icon: <FaYahoo className="h-4 w-4" />,
         searchUrl: (q) => `https://search.yahoo.com/search?p=${encodeURIComponent(q)}`
     }
 };
@@ -130,7 +132,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
                         )}
                         aria-label={`Current search engine: ${currentEngine.name}. Click to change.`}
                     >
-                        <span className="text-base">{currentEngine.icon}</span>
+                        {currentEngine.icon}
                         <span className="hidden sm:inline text-xs">{currentEngine.name}</span>
                         <ChevronDown className="h-3 w-3" />
                     </button>
@@ -155,7 +157,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
                                         searchEngine === key && 'bg-accent'
                                     )}
                                 >
-                                    <span className="text-base">{engine.icon}</span>
+                                    {engine.icon}
                                     <span>{engine.name}</span>
                                     {searchEngine === key && (
                                         <span className="ml-auto text-xs text-primary">✓</span>

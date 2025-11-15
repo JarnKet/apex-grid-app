@@ -15,6 +15,36 @@ import {
 import { Plus, ExternalLink, Pencil, Trash2 } from 'lucide-react';
 
 /**
+ * Default preset quick links with popular sites
+ */
+const DEFAULT_QUICK_LINKS: QuickLink[] = [
+    {
+        id: 'preset-google',
+        title: 'Google',
+        url: 'https://www.google.com',
+        icon: 'https://www.google.com/favicon.ico',
+    },
+    {
+        id: 'preset-youtube',
+        title: 'YouTube',
+        url: 'https://www.youtube.com',
+        icon: 'https://www.youtube.com/favicon.ico',
+    },
+    {
+        id: 'preset-facebook',
+        title: 'Facebook',
+        url: 'https://www.facebook.com',
+        icon: 'https://www.facebook.com/favicon.ico',
+    },
+    {
+        id: 'preset-x',
+        title: 'X (Twitter)',
+        url: 'https://x.com',
+        icon: 'https://abs.twimg.com/favicons/twitter.3.ico',
+    },
+];
+
+/**
  * QuickLinksWidget provides quick access to favorite websites
  * - Display clickable link items in a grid
  * - Add new links with title and URL
@@ -30,8 +60,8 @@ const QuickLinksWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChan
     const [linkUrl, setLinkUrl] = useState('');
     const [urlError, setUrlError] = useState('');
 
-    // Get links from widget data, default to empty array
-    const links: QuickLink[] = data?.links || [];
+    // Get links from widget data, default to preset links
+    const links: QuickLink[] = data?.links || DEFAULT_QUICK_LINKS;
 
     /**
      * Validate and sanitize URL
@@ -258,7 +288,20 @@ const QuickLinksWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChan
                                         title={link.url}
                                     >
                                         <div className="flex items-start gap-2">
-                                            <ExternalLink className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" aria-hidden="true" />
+                                            {link.icon ? (
+                                                <img
+                                                    src={link.icon}
+                                                    alt=""
+                                                    className="h-4 w-4 mt-0.5 flex-shrink-0"
+                                                    onError={(e) => {
+                                                        // Fallback to ExternalLink icon if image fails
+                                                        e.currentTarget.style.display = 'none';
+                                                        const fallback = e.currentTarget.nextElementSibling;
+                                                        if (fallback) fallback.classList.remove('hidden');
+                                                    }}
+                                                />
+                                            ) : null}
+                                            <ExternalLink className={`h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground ${link.icon ? 'hidden' : ''}`} aria-hidden="true" />
                                             <span className="text-sm font-medium line-clamp-2 break-words">
                                                 {link.title}
                                             </span>
