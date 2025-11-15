@@ -1,6 +1,6 @@
 // Widget type definitions for ApexGrid
 
-export type WidgetType = 'clock' | 'calendar' | 'todo' | 'quicklinks' | 'quote' | 'currency';
+export type WidgetType = 'clock' | 'calendar' | 'todo' | 'quicklinks' | 'quote' | 'currency' | 'rss';
 
 export interface Widget {
     id: string;

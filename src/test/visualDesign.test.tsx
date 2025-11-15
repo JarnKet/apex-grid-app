@@ -19,7 +19,7 @@ describe('Visual Design Enhancements', () => {
     describe('Glassmorphism Effects', () => {
         it('should apply widget-glass class to widgets', () => {
             const { container } = render(
-                <WidgetWrapper id="test-widget" title="Test Widget" onRemove={() => { }}>
+                <WidgetWrapper id="test-widget" title="Test Widget">
                     <div>Content</div>
                 </WidgetWrapper>
             );
@@ -30,7 +30,7 @@ describe('Visual Design Enhancements', () => {
 
         it('should apply widget-glass-hover class for hover effects', () => {
             const { container } = render(
-                <WidgetWrapper id="test-widget" title="Test Widget" onRemove={() => { }}>
+                <WidgetWrapper id="test-widget" title="Test Widget">
                     <div>Content</div>
                 </WidgetWrapper>
             );
@@ -89,7 +89,7 @@ describe('Visual Design Enhancements', () => {
     describe('Gradient Borders', () => {
         it('should apply widget-gradient-border class to widgets', () => {
             const { container } = render(
-                <WidgetWrapper id="test-widget" title="Test Widget" onRemove={() => { }}>
+                <WidgetWrapper id="test-widget" title="Test Widget">
                     <div>Content</div>
                 </WidgetWrapper>
             );
@@ -254,7 +254,7 @@ describe('Visual Design Enhancements', () => {
     describe('Widget Load Animations', () => {
         it('should apply animate-fade-in animation on mount', () => {
             const { container } = render(
-                <WidgetWrapper id="test-widget" title="Test Widget" onRemove={() => { }}>
+                <WidgetWrapper id="test-widget" title="Test Widget">
                     <div>Content</div>
                 </WidgetWrapper>
             );
@@ -503,7 +503,7 @@ describe('Visual Design Enhancements', () => {
 
             // Verify that these classes would be used in components
             const { container } = render(
-                <WidgetWrapper id="test-widget" title="Test Widget" onRemove={() => { }}>
+                <WidgetWrapper id="test-widget" title="Test Widget">
                     <div>Content</div>
                 </WidgetWrapper>
             );

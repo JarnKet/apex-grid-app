@@ -6,6 +6,7 @@ import { TodoWidget } from './widgets/TodoWidget';
 import { QuickLinksWidget } from './widgets/QuickLinksWidget';
 import { QuoteWidget } from './widgets/QuoteWidget';
 import { CurrencyWidget } from './widgets/CurrencyWidget';
+import { RSSWidget } from './widgets/RSSWidget';
 
 interface WidgetRendererProps {
     widget: Widget;
@@ -45,6 +46,9 @@ const WidgetRendererComponent: React.FC<WidgetRendererProps> = ({ widget, data, 
 
         case 'currency':
             return <CurrencyWidget {...widgetProps} />;
+
+        case 'rss':
+            return <RSSWidget {...widgetProps} />;
 
         default:
             // Handle unknown widget types gracefully

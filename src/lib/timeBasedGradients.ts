@@ -12,34 +12,35 @@ export interface TimeGradient {
 
 /**
  * Predefined gradients for different times of day
- * Morning: 5 AM - 11 AM (warm sunrise colors)
- * Afternoon: 12 PM - 4 PM (bright daylight colors)
- * Evening: 5 PM - 8 PM (sunset colors)
- * Night: 9 PM - 4 AM (deep blue and purple tones)
+ * Dark, minimal gradients optimized for developer aesthetics
+ * Morning: 5 AM - 11 AM (subtle cool tones)
+ * Afternoon: 12 PM - 4 PM (neutral dark tones)
+ * Evening: 5 PM - 8 PM (warm dark tones)
+ * Night: 9 PM - 4 AM (deep blacks and blues)
  */
 export const TIME_GRADIENTS: Record<string, TimeGradient> = {
     morning: {
-        from: '#FFE5B4', // Peach
-        via: '#FFB6C1',  // Light pink
-        to: '#87CEEB',   // Sky blue
+        from: '#0a0a0f', // Very dark blue
+        via: '#0f0f18',  // Dark blue-gray
+        to: '#14141f',   // Dark slate
         period: 'morning'
     },
     afternoon: {
-        from: '#87CEEB', // Sky blue
-        via: '#4FC3F7',  // Light blue
-        to: '#29B6F6',   // Bright blue
+        from: '#0a0a0b', // Almost black
+        via: '#0f0f11',  // Very dark gray
+        to: '#14141a',   // Dark neutral
         period: 'afternoon'
     },
     evening: {
-        from: '#FF6B6B', // Coral
-        via: '#FF8E53',  // Orange
-        to: '#FE6B8B',   // Pink
+        from: '#0f0a0a', // Very dark warm
+        via: '#140f0f',  // Dark warm gray
+        to: '#1a1414',   // Dark warm neutral
         period: 'evening'
     },
     night: {
-        from: '#1A1A2E', // Dark blue
-        via: '#16213E',  // Navy
-        to: '#0F3460',   // Deep blue
+        from: '#09090b', // Almost black with blue tint
+        via: '#0f0f13',  // Very dark blue
+        to: '#14141b',   // Dark blue-gray
         period: 'night'
     }
 };
