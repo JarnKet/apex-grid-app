@@ -2,13 +2,13 @@ import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { GridLayout } from './GridLayout';
 import { WidgetRenderer } from './WidgetRenderer';
 import { SettingsPanel } from './SettingsPanel';
-import { Greeting } from './Greeting';
+import { WidgetGallery } from './WidgetGallery';
 import { SearchBar } from './SearchBar';
 import { useLayoutStore } from '../stores/useLayoutStore';
 import { useWidgetStore } from '../stores/useWidgetStore';
 import { useSettingsStore } from '../stores/useSettingsStore';
 import { useKeyboardNavigation } from '../lib/useKeyboardNavigation';
-import { getCurrentTimeGradient, getGradientStyle } from '../lib/timeBasedGradients';
+import { getPatternStyle } from '../lib/backgroundPatterns';
 
 /**
  * Dashboard component - main layout container for ApexGrid
@@ -27,10 +27,25 @@ export const Dashboard: React.FC = () => {
         initializeWidgets,
         updateWidgetData
     } = useWidgetStore();
-    const { background } = useSettingsStore();
+    const { background, backgroundPattern, layoutWidth, theme } = useSettingsStore();
     const [settingsOpen, setSettingsOpen] = useState(false);
-    const [timeGradient, setTimeGradient] = useState(getCurrentTimeGradient());
     const widgetRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+    // Get container width class based on setting
+    const getContainerClass = () => {
+        switch (layoutWidth) {
+            case 'compact':
+                return 'max-w-5xl';
+            case 'standard':
+                return 'max-w-7xl';
+            case 'wide':
+                return 'max-w-[1600px]';
+            case 'full':
+                return 'max-w-none px-8';
+            default:
+                return 'max-w-7xl';
+        }
+    };
 
     /**
      * Initialize stores from Chrome Storage on component mount
@@ -51,20 +66,7 @@ export const Dashboard: React.FC = () => {
         initializeStores();
     }, [initializeLayout, initializeWidgets]);
 
-    /**
-     * Update time-based gradient every 60 seconds
-     */
-    useEffect(() => {
-        const updateGradient = () => {
-            setTimeGradient(getCurrentTimeGradient());
-        };
 
-        // Set up interval to update gradient every 60 seconds
-        const interval = setInterval(updateGradient, 60000);
-
-        // Clean up interval on unmount
-        return () => clearInterval(interval);
-    }, []);
 
     /**
      * Handle widget data changes
@@ -132,33 +134,40 @@ export const Dashboard: React.FC = () => {
 
     // Apply background style - memoized to prevent object recreation
     const backgroundStyle: React.CSSProperties = useMemo(() => {
+        const isDark = theme === 'dark';
+        const patternStyle = getPatternStyle(backgroundPattern, isDark);
+
         if (background) {
-            return background.startsWith('#') || background.startsWith('rgb')
+            const bgStyle = background.startsWith('#') || background.startsWith('rgb')
                 ? { backgroundColor: background }
                 : { backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center' };
+
+            // Combine custom background with pattern
+            return { ...bgStyle, ...patternStyle };
         }
 
-        // Use time-based gradient when no custom background is set
-        return getGradientStyle(timeGradient);
-    }, [background, timeGradient]);
+        // Use pattern with default background color
+        return {
+            backgroundColor: isDark ? 'hsl(var(--background))' : 'hsl(var(--background))',
+            ...patternStyle
+        };
+    }, [background, backgroundPattern, theme]);
 
     return (
         <div
             id="main-content"
-            className="min-h-screen bg-background p-4 transition-all duration-1000"
+            className="min-h-screen  p-4 transition-all duration-1000"
             style={backgroundStyle}
             role="main"
             aria-label="ApexGrid Dashboard"
         >
+            <WidgetGallery />
             <SettingsPanel isOpen={settingsOpen} onOpenChange={setSettingsOpen} />
 
-            {/* Greeting and SearchBar container with max-width for proper centering */}
-            <div className="max-w-7xl mx-auto">
-                {/* Greeting component with staggered fade-in animation */}
-                <Greeting className="mb-6 animate-slide-in-from-top" />
-
-                {/* SearchBar component with staggered fade-in animation (delayed) */}
-                <SearchBar className="mb-8 animate-slide-in-from-top [animation-delay:100ms]" />
+            {/* SearchBar container with responsive max-width */}
+            <div className={`${getContainerClass()} mx-auto transition-all duration-300`}>
+                {/* SearchBar with integrated greeting */}
+                <SearchBar className="mb-8 animate-slide-in-from-top" />
 
                 {/* GridLayout with widgets */}
                 <GridLayout>

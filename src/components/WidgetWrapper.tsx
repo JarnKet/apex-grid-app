@@ -1,6 +1,7 @@
 import React, { Component, type ReactNode } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
+import { X } from 'lucide-react';
 import { useWidgetStore } from '../stores/useWidgetStore';
 
 interface WidgetWrapperProps {
@@ -72,7 +73,7 @@ const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, child
 
     return (
         <Card
-            className="h-full flex flex-col overflow-hidden widget-glass widget-glass-hover animate-fade-in"
+            className="h-full flex flex-col overflow-hidden widget-glass-hover animate-fade-in"
             role="region"
             aria-label={`${title} widget`}
         >
@@ -86,25 +87,13 @@ const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, child
                     variant="ghost"
                     size="icon"
                     onClick={handleRemove}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
                     className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label={`Remove ${title} widget`}
                     title={`Remove ${title} widget`}
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                    >
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                    </svg>
+                    <X className="h-4 w-4" aria-hidden="true" />
                 </Button>
             </CardHeader>
             <CardContent className="flex-1 overflow-auto">

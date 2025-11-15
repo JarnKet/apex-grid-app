@@ -22,7 +22,9 @@ const DEFAULT_WIDGETS: Widget[] = [
     { id: 'todo-1', type: 'todo', enabled: true },
     { id: 'quicklinks-1', type: 'quicklinks', enabled: true },
     { id: 'quote-1', type: 'quote', enabled: true },
-    { id: 'currency-1', type: 'currency', enabled: true },
+    { id: 'crypto-1', type: 'crypto', enabled: true },
+    { id: 'rss-1', type: 'rss', enabled: true },
+    { id: 'weather-1', type: 'weather', enabled: true },
 ];
 
 /**

@@ -2,6 +2,7 @@
 
 import type { Layout } from './layout';
 import type { Widget, TodoItem, QuickLink, CachedQuote, CachedCurrency } from './widget';
+import type { BackgroundPattern } from '../lib/backgroundPatterns';
 
 export interface WidgetDataSchema {
     // Todo widget data
@@ -18,10 +19,13 @@ export interface WidgetDataSchema {
 }
 
 export type SearchEngine = 'google' | 'bing' | 'duckduckgo' | 'yahoo';
+export type LayoutWidth = 'compact' | 'standard' | 'wide' | 'full';
 
 export interface AppSettings {
     theme: 'dark' | 'light';
     background: string | null;
+    backgroundPattern: BackgroundPattern;
+    layoutWidth: LayoutWidth;
     userName: string | null;
     searchEngine: SearchEngine;
 }

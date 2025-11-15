@@ -106,7 +106,7 @@ const TodoWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) 
 
                 {/* Task list */}
                 <div
-                    className="flex-1 overflow-y-auto space-y-2"
+                    className="flex-1 overflow-y-auto space-y-2 widget-scrollbar"
                     role="list"
                     aria-label="Task list"
                 >

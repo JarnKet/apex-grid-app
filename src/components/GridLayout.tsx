@@ -1,8 +1,10 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 import RGL, { WidthProvider, type Layout as RGLLayout } from 'react-grid-layout';
 import type { Layout } from '../types/layout';
 import { useLayoutStore } from '../stores/useLayoutStore';
+import { useWidgetStore } from '../stores/useWidgetStore';
 import { debounce } from '../lib/utils';
+import { getWidgetDefaults } from '../lib/widgetDefaults';
 import 'react-grid-layout/css/styles.css';
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -21,6 +23,7 @@ interface GridLayoutProps {
  */
 export const GridLayout: React.FC<GridLayoutProps> = ({ children }) => {
     const { layout, updateLayout } = useLayoutStore();
+    const { widgets } = useWidgetStore();
 
     /**
      * Track whether a resize operation is in progress
@@ -91,11 +94,32 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ children }) => {
         }
     }, [convertLayout, debouncedUpdateLayout]);
 
+    /**
+     * Enhance layout with default constraints for widgets
+     * Ensures all widgets have proper min/max sizes even if not in layout
+     */
+    const enhancedLayout = useMemo(() => {
+        return layout.map(item => {
+            const widget = widgets.find(w => w.id === item.i);
+            if (widget) {
+                const defaults = getWidgetDefaults(widget.type);
+                return {
+                    ...item,
+                    minW: item.minW ?? defaults.minW,
+                    minH: item.minH ?? defaults.minH,
+                    maxW: item.maxW ?? defaults.maxW,
+                    maxH: item.maxH ?? defaults.maxH,
+                };
+            }
+            return item;
+        });
+    }, [layout, widgets]);
+
     return (
         <div role="application" aria-label="Widget grid layout">
             <ReactGridLayout
                 className="layout"
-                layout={layout}
+                layout={enhancedLayout}
                 cols={12}
                 rowHeight={80}
                 onLayoutChange={handleLayoutChange}

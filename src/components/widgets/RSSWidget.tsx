@@ -119,11 +119,10 @@ const RSSWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) =
                                 <button
                                     key={feed.url}
                                     onClick={() => handleFeedChange(feed.url)}
-                                    className={`w-full text-left px-2 py-1.5 text-xs rounded transition-colors ${
-                                        selectedFeed === feed.url
+                                    className={`w-full text-left px-2 py-1.5 text-xs rounded transition-colors ${selectedFeed === feed.url
                                             ? 'bg-primary text-primary-foreground'
                                             : 'hover:bg-background'
-                                    }`}
+                                        }`}
                                 >
                                     {feed.name}
                                 </button>
@@ -162,7 +161,7 @@ const RSSWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) =
                 )}
 
                 {items.length > 0 && (
-                    <div className="flex-1 overflow-y-auto space-y-2">
+                    <div className="flex-1 overflow-y-auto space-y-2 widget-scrollbar">
                         {items.map((item, index) => (
                             <a
                                 key={index}

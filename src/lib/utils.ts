@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs))
 }
 
 /**
@@ -13,20 +13,20 @@ export function cn(...inputs: ClassValue[]) {
  * @returns Debounced function
  */
 export function debounce<T extends (...args: any[]) => any>(
-    func: T,
-    wait: number
+  func: T,
+  wait: number
 ): (...args: Parameters<T>) => void {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    return function (this: any, ...args: Parameters<T>) {
-        if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-        }
+  return function (this: any, ...args: Parameters<T>) {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
 
-        timeoutId = setTimeout(() => {
-            func.apply(this, args);
-        }, wait);
-    };
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
 }
 
 /**
@@ -36,26 +36,26 @@ export function debounce<T extends (...args: any[]) => any>(
  * @returns Throttled function
  */
 export function throttle<T extends (...args: any[]) => any>(
-    func: T,
-    wait: number
+  func: T,
+  wait: number
 ): (...args: Parameters<T>) => void {
-    let inThrottle = false;
-    let lastArgs: Parameters<T> | null = null;
+  let inThrottle = false;
+  let lastArgs: Parameters<T> | null = null;
 
-    return function (this: any, ...args: Parameters<T>) {
-        if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
+  return function (this: any, ...args: Parameters<T>) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
 
-            setTimeout(() => {
-                inThrottle = false;
-                if (lastArgs !== null) {
-                    func.apply(this, lastArgs);
-                    lastArgs = null;
-                }
-            }, wait);
-        } else {
-            lastArgs = args;
+      setTimeout(() => {
+        inThrottle = false;
+        if (lastArgs !== null) {
+          func.apply(this, lastArgs);
+          lastArgs = null;
         }
-    };
+      }, wait);
+    } else {
+      lastArgs = args;
+    }
+  };
 }

@@ -5,8 +5,10 @@ import { CalendarWidget } from './widgets/CalendarWidget';
 import { TodoWidget } from './widgets/TodoWidget';
 import { QuickLinksWidget } from './widgets/QuickLinksWidget';
 import { QuoteWidget } from './widgets/QuoteWidget';
-import { CurrencyWidget } from './widgets/CurrencyWidget';
+import { CryptoWidget } from './widgets/CryptoWidget';
 import { RSSWidget } from './widgets/RSSWidget';
+import { WeatherWidget } from './widgets/WeatherWidget';
+import { PomodoroWidget } from './widgets/PomodoroWidget';
 
 interface WidgetRendererProps {
     widget: Widget;
@@ -44,11 +46,17 @@ const WidgetRendererComponent: React.FC<WidgetRendererProps> = ({ widget, data, 
         case 'quote':
             return <QuoteWidget {...widgetProps} />;
 
-        case 'currency':
-            return <CurrencyWidget {...widgetProps} />;
+        case 'crypto':
+            return <CryptoWidget {...widgetProps} />;
 
         case 'rss':
             return <RSSWidget {...widgetProps} />;
+
+        case 'weather':
+            return <WeatherWidget {...widgetProps} />;
+
+        case 'pomodoro':
+            return <PomodoroWidget {...widgetProps} />;
 
         default:
             // Handle unknown widget types gracefully

@@ -16,10 +16,10 @@ const ClockWidgetComponent: React.FC<WidgetProps> = ({ id }) => {
         // Update time immediately on mount
         setCurrentTime(new Date());
 
-        // Set up interval to update every 60 seconds
+        // Set up interval to update every second
         const intervalId = setInterval(() => {
             setCurrentTime(new Date());
-        }, 60000); // 60 seconds
+        }, 1000); // 1 second
 
         // Clean up interval on component unmount
         return () => {
@@ -27,10 +27,11 @@ const ClockWidgetComponent: React.FC<WidgetProps> = ({ id }) => {
         };
     }, []);
 
-    // Format time with minute-level precision (HH:MM)
+    // Format time with second-level precision (HH:MM:SS)
     const timeFormatter = new Intl.DateTimeFormat('en-US', {
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
         hour12: true,
     });
 

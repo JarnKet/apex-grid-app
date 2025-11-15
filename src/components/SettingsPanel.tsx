@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Search } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -12,30 +12,20 @@ import { Button } from './ui/Button';
 import { Switch } from './ui/Switch';
 import { Input } from './ui/Input';
 import { useSettingsStore } from '../stores/useSettingsStore';
-import { useWidgetStore } from '../stores/useWidgetStore';
-import type { WidgetType } from '../types/widget';
+import { getAllPatterns, type BackgroundPattern } from '../lib/backgroundPatterns';
+import type { LayoutWidth } from '../types/storage';
 
 /**
  * Search engine options for the selector
  */
 const SEARCH_ENGINE_OPTIONS = [
-    { value: 'google' as const, label: 'Google', icon: '🔍' },
-    { value: 'bing' as const, label: 'Bing', icon: '🅱️' },
-    { value: 'duckduckgo' as const, label: 'DuckDuckGo', icon: '🦆' },
-    { value: 'yahoo' as const, label: 'Yahoo', icon: 'Y!' },
+    { value: 'google' as const, label: 'Google' },
+    { value: 'bing' as const, label: 'Bing' },
+    { value: 'duckduckgo' as const, label: 'DuckDuckGo' },
+    { value: 'yahoo' as const, label: 'Yahoo' },
 ];
 
-/**
- * Widget type metadata for display in settings
- */
-const WIDGET_TYPES: Array<{ type: WidgetType; label: string; description: string }> = [
-    { type: 'clock', label: 'Clock', description: 'Display current time and date' },
-    { type: 'calendar', label: 'Calendar', description: 'Monthly calendar view' },
-    { type: 'todo', label: 'Todo List', description: 'Manage your tasks' },
-    { type: 'quicklinks', label: 'Quick Links', description: 'Access favorite websites' },
-    { type: 'quote', label: 'Daily Quote', description: 'Inspirational quotes' },
-    { type: 'currency', label: 'Currency Exchange', description: 'Live exchange rates' },
-];
+
 
 interface SettingsPanelProps {
     isOpen?: boolean;
@@ -53,12 +43,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     isOpen: controlledIsOpen,
     onOpenChange: controlledOnOpenChange
 }) => {
-    const { theme, background, userName, searchEngine, setTheme, setBackground, setUserName, setSearchEngine } = useSettingsStore();
-    const { widgets, addWidget, removeWidget } = useWidgetStore();
+    const { theme, background, backgroundPattern, layoutWidth, userName, searchEngine, setTheme, setBackground, setBackgroundPattern, setLayoutWidth, setUserName, setSearchEngine } = useSettingsStore();
     const [backgroundInput, setBackgroundInput] = useState(background || '');
     const [userNameInput, setUserNameInput] = useState(userName || '');
     const [userNameError, setUserNameError] = useState<string | null>(null);
     const [internalIsOpen, setInternalIsOpen] = useState(false);
+
+    const patterns = getAllPatterns();
 
     // Use controlled state if provided, otherwise use internal state
     const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
@@ -143,26 +134,25 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     };
 
     /**
-     * Handle widget enable/disable toggle
+     * Handle background pattern change
      */
-    const handleWidgetToggle = (type: WidgetType, enabled: boolean) => {
-        if (enabled) {
-            // Add widget
-            addWidget(type);
-        } else {
-            // Find and remove widget of this type
-            const widgetToRemove = widgets.find(w => w.type === type);
-            if (widgetToRemove) {
-                removeWidget(widgetToRemove.id);
-            }
+    const handlePatternChange = async (pattern: BackgroundPattern) => {
+        try {
+            await setBackgroundPattern(pattern);
+        } catch (error) {
+            console.error('Failed to update background pattern:', error);
         }
     };
 
     /**
-     * Check if a widget type is currently enabled
+     * Handle layout width change
      */
-    const isWidgetEnabled = (type: WidgetType): boolean => {
-        return widgets.some(w => w.type === type && w.enabled);
+    const handleLayoutWidthChange = async (width: LayoutWidth) => {
+        try {
+            await setLayoutWidth(width);
+        } catch (error) {
+            console.error('Failed to update layout width:', error);
+        }
     };
 
     return (
@@ -179,17 +169,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 </Button>
             </DialogTrigger>
             <DialogContent
-                className="max-w-2xl max-h-[80vh] overflow-y-auto"
+                className="w-[90vw] max-w-[90vw] h-[90vh] max-h-[90vh] overflow-hidden flex flex-col"
                 aria-describedby="settings-description"
             >
-                <DialogHeader>
+                <DialogHeader className="flex-shrink-0">
                     <DialogTitle>Settings</DialogTitle>
                     <DialogDescription id="settings-description">
-                        Customize your ApexGrid dashboard appearance and widgets
+                        Customize your ApexGrid dashboard appearance and preferences
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-6 py-4" role="form" aria-label="Dashboard settings">
+                <div className="flex-1 overflow-y-auto space-y-6 py-4 settings-scrollbar" role="form" aria-label="Dashboard settings">
                     {/* Personalization Settings */}
                     <section className="space-y-4" aria-labelledby="personalization-heading">
                         <h3 id="personalization-heading" className="text-sm font-medium">Personalization</h3>
@@ -269,9 +259,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                             className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
                                             aria-label={`Select ${option.label} as search engine`}
                                         />
-                                        <span className="text-lg" aria-hidden="true">
-                                            {option.icon}
-                                        </span>
+                                        <Search className="h-4 w-4" aria-hidden="true" />
                                         <span className="text-sm font-medium">
                                             {option.label}
                                         </span>
@@ -309,11 +297,86 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
 
                         <div className="space-y-2">
+                            <label className="text-sm font-medium">
+                                Layout Width
+                            </label>
+                            <p className="text-sm text-muted-foreground" id="layout-width-description">
+                                Choose how wide the dashboard should be (perfect for larger monitors)
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                                {[
+                                    { value: 'compact' as LayoutWidth, label: 'Compact', desc: '1024px max' },
+                                    { value: 'standard' as LayoutWidth, label: 'Standard', desc: '1280px max' },
+                                    { value: 'wide' as LayoutWidth, label: 'Wide', desc: '1600px max' },
+                                    { value: 'full' as LayoutWidth, label: 'Full Width', desc: 'Full screen with padding' },
+                                ].map((option) => (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => handleLayoutWidthChange(option.value)}
+                                        className={`
+                                            relative p-3 rounded-lg border-2 transition-all duration-200 text-left
+                                            ${layoutWidth === option.value
+                                                ? 'border-primary bg-primary/10'
+                                                : 'border-border bg-card hover:border-primary/50'
+                                            }
+                                        `}
+                                        aria-label={`Select ${option.label} layout width`}
+                                    >
+                                        <div className="text-sm font-medium">{option.label}</div>
+                                        <div className="text-xs text-muted-foreground">{option.desc}</div>
+                                        {layoutWidth === option.value && (
+                                            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">
+                                Background Pattern
+                            </label>
+                            <p className="text-sm text-muted-foreground" id="pattern-description">
+                                Choose a background pattern overlay
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                                {patterns.map((pattern) => (
+                                    <button
+                                        key={pattern.id}
+                                        onClick={() => handlePatternChange(pattern.id)}
+                                        className={`
+                                            relative p-4 rounded-lg border-2 transition-all duration-200
+                                            ${backgroundPattern === pattern.id
+                                                ? 'border-primary bg-primary/10'
+                                                : 'border-border bg-card hover:border-primary/50'
+                                            }
+                                        `}
+                                        aria-label={`Select ${pattern.name} pattern`}
+                                        title={pattern.description}
+                                    >
+                                        <div
+                                            className="h-16 rounded mb-2"
+                                            style={{
+                                                backgroundColor: theme === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                                                ...pattern.getStyle(theme === 'dark')
+                                            }}
+                                        />
+                                        <div className="text-xs font-medium">{pattern.name}</div>
+                                        <div className="text-xs text-muted-foreground">{pattern.description}</div>
+                                        {backgroundPattern === pattern.id && (
+                                            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
                             <label htmlFor="background-input" className="text-sm font-medium">
-                                Background
+                                Background Color/Image
                             </label>
                             <p className="text-sm text-muted-foreground" id="background-description">
-                                Enter a color (e.g., #1a1a1a) or image URL
+                                Enter a color (e.g., #1a1a1a) or image URL (leave empty for default)
                             </p>
                             <div className="flex gap-2">
                                 <Input
@@ -339,45 +402,6 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                     Apply
                                 </Button>
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Widget Settings */}
-                    <section className="space-y-4" aria-labelledby="widgets-heading">
-                        <h3 id="widgets-heading" className="text-sm font-medium">Widgets</h3>
-                        <p className="text-sm text-muted-foreground">
-                            Enable or disable widgets on your dashboard
-                        </p>
-
-                        <div className="space-y-3" role="list" aria-label="Available widgets">
-                            {WIDGET_TYPES.map(({ type, label, description }) => (
-                                <div
-                                    key={type}
-                                    className="flex items-center justify-between p-3 rounded-lg border bg-card"
-                                    role="listitem"
-                                >
-                                    <div className="space-y-0.5">
-                                        <label
-                                            htmlFor={`widget-${type}`}
-                                            className="text-sm font-medium cursor-pointer"
-                                        >
-                                            {label}
-                                        </label>
-                                        <p className="text-sm text-muted-foreground" id={`widget-${type}-description`}>
-                                            {description}
-                                        </p>
-                                    </div>
-                                    <Switch
-                                        id={`widget-${type}`}
-                                        checked={isWidgetEnabled(type)}
-                                        onCheckedChange={(checked: boolean) =>
-                                            handleWidgetToggle(type, checked)
-                                        }
-                                        aria-describedby={`widget-${type}-description`}
-                                        aria-label={`${label} widget is ${isWidgetEnabled(type) ? 'enabled' : 'disabled'}`}
-                                    />
-                                </div>
-                            ))}
                         </div>
                     </section>
                 </div>

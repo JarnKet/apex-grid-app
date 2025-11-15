@@ -232,7 +232,7 @@ const QuickLinksWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChan
 
                 {/* Links grid */}
                 <div
-                    className="flex-1 overflow-y-auto"
+                    className="flex-1 overflow-y-auto widget-scrollbar"
                     role="list"
                     aria-label="Quick links"
                 >

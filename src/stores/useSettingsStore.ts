@@ -1,17 +1,22 @@
 // Settings store for managing app preferences with Zustand
 
 import { create } from 'zustand';
-import type { AppSettings } from '../types/storage';
+import type { AppSettings, LayoutWidth } from '../types/storage';
 import { storage } from '../services/storage';
+import type { BackgroundPattern } from '../lib/backgroundPatterns';
 
 interface SettingsStore {
     theme: 'dark' | 'light';
     background: string | null;
+    backgroundPattern: BackgroundPattern;
+    layoutWidth: LayoutWidth;
     userName: string | null;
     searchEngine: 'google' | 'bing' | 'duckduckgo' | 'yahoo';
     isInitialized: boolean;
     setTheme: (theme: 'dark' | 'light') => Promise<void>;
     setBackground: (background: string | null) => Promise<void>;
+    setBackgroundPattern: (pattern: BackgroundPattern) => Promise<void>;
+    setLayoutWidth: (width: LayoutWidth) => Promise<void>;
     setUserName: (userName: string | null) => Promise<void>;
     setSearchEngine: (searchEngine: 'google' | 'bing' | 'duckduckgo' | 'yahoo') => Promise<void>;
     initializeSettings: () => Promise<void>;
@@ -21,6 +26,8 @@ interface SettingsStore {
 const DEFAULT_SETTINGS: AppSettings = {
     theme: 'dark',
     background: null,
+    backgroundPattern: 'dots',
+    layoutWidth: 'standard',
     userName: null,
     searchEngine: 'google',
 };
@@ -41,6 +48,8 @@ function applyTheme(theme: 'dark' | 'light'): void {
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
     theme: DEFAULT_SETTINGS.theme,
     background: DEFAULT_SETTINGS.background,
+    backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
+    layoutWidth: DEFAULT_SETTINGS.layoutWidth,
     userName: DEFAULT_SETTINGS.userName,
     searchEngine: DEFAULT_SETTINGS.searchEngine,
     isInitialized: false,
@@ -57,8 +66,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             applyTheme(theme);
 
             // Get current settings and update theme
-            const { background, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, userName, searchEngine };
+            const { background, backgroundPattern, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -77,13 +86,53 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ background });
 
             // Get current settings and update background
-            const { theme, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, userName, searchEngine };
+            const { theme, backgroundPattern, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
         } catch (error) {
             console.error('Failed to update background:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Set background pattern preference and persist to Chrome Storage
+     */
+    setBackgroundPattern: async (backgroundPattern: BackgroundPattern) => {
+        try {
+            // Update local state first for immediate UI feedback
+            set({ backgroundPattern });
+
+            // Get current settings and update pattern
+            const { theme, background, layoutWidth, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+
+            // Persist to Chrome Storage
+            await storage.set('settings', updatedSettings);
+        } catch (error) {
+            console.error('Failed to update background pattern:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Set layout width preference and persist to Chrome Storage
+     */
+    setLayoutWidth: async (layoutWidth: LayoutWidth) => {
+        try {
+            // Update local state first for immediate UI feedback
+            set({ layoutWidth });
+
+            // Get current settings and update width
+            const { theme, background, backgroundPattern, userName, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
+
+            // Persist to Chrome Storage
+            await storage.set('settings', updatedSettings);
+        } catch (error) {
+            console.error('Failed to update layout width:', error);
             throw error;
         }
     },
@@ -108,8 +157,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ userName });
 
             // Get current settings and update userName
-            const { theme, background, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, background, userName, searchEngine };
+            const { theme, background, backgroundPattern, layoutWidth, searchEngine } = get();
+            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -128,8 +177,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ searchEngine });
 
             // Get current settings and update searchEngine
-            const { theme, background, userName } = get();
-            const updatedSettings: AppSettings = { theme, background, userName, searchEngine };
+            const { theme, background, backgroundPattern, layoutWidth, userName } = get();
+            const updatedSettings: AppSettings = { theme, background, backgroundPattern, layoutWidth, userName, searchEngine };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -151,12 +200,14 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                 const background = storedSettings.background !== undefined
                     ? storedSettings.background
                     : DEFAULT_SETTINGS.background;
+                const backgroundPattern = storedSettings.backgroundPattern || DEFAULT_SETTINGS.backgroundPattern;
+                const layoutWidth = storedSettings.layoutWidth || DEFAULT_SETTINGS.layoutWidth;
                 const userName = storedSettings.userName !== undefined
                     ? storedSettings.userName
                     : DEFAULT_SETTINGS.userName;
                 const searchEngine = storedSettings.searchEngine || DEFAULT_SETTINGS.searchEngine;
 
-                set({ theme, background, userName, searchEngine, isInitialized: true });
+                set({ theme, background, backgroundPattern, layoutWidth, userName, searchEngine, isInitialized: true });
 
                 // Apply theme to document root
                 applyTheme(theme);
@@ -165,6 +216,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                 set({
                     theme: DEFAULT_SETTINGS.theme,
                     background: DEFAULT_SETTINGS.background,
+                    backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
+                    layoutWidth: DEFAULT_SETTINGS.layoutWidth,
                     userName: DEFAULT_SETTINGS.userName,
                     searchEngine: DEFAULT_SETTINGS.searchEngine,
                     isInitialized: true,
@@ -181,6 +234,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({
                 theme: DEFAULT_SETTINGS.theme,
                 background: DEFAULT_SETTINGS.background,
+                backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
+                layoutWidth: DEFAULT_SETTINGS.layoutWidth,
                 userName: DEFAULT_SETTINGS.userName,
                 searchEngine: DEFAULT_SETTINGS.searchEngine,
                 isInitialized: true,
