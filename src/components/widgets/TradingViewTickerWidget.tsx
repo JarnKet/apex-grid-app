@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { WidgetWrapper } from '../WidgetWrapper';
+import { TrendingUp } from 'lucide-react';
 import type { WidgetProps } from '../../types/widget';
 
 /**
@@ -44,7 +45,7 @@ const TradingViewTickerWidgetComponent: React.FC<WidgetProps> = ({ id }) => {
     }, []);
 
     return (
-        <WidgetWrapper id={id} title="Market Ticker">
+        <WidgetWrapper id={id} title="Market Ticker" icon={<TrendingUp className="h-4 w-4" />}>
             <div className="tradingview-widget-container h-full w-full flex-1" ref={containerRef} style={{ minHeight: '120px' }}>
                 <div className="tradingview-widget-container__widget h-full w-full"></div>
             </div>

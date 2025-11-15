@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { WidgetWrapper } from '../WidgetWrapper';
+import { Calendar } from 'lucide-react';
 import type { WidgetProps } from '../../types/widget';
 import {
     startOfMonth,
@@ -70,7 +71,7 @@ const CalendarWidgetComponent: React.FC<WidgetProps> = ({ id }) => {
     };
 
     return (
-        <WidgetWrapper id={id} title="Calendar">
+        <WidgetWrapper id={id} title="Calendar" icon={<Calendar className="h-4 w-4" />}>
             <div className="flex flex-col h-full p-2">
                 {/* Month header with navigation */}
                 <nav

@@ -12,6 +12,20 @@ import { TradingViewTickerWidget } from './widgets/TradingViewTickerWidget';
 import { TradingViewChartWidget } from './widgets/TradingViewChartWidget';
 import { TradingViewMiniWidget } from './widgets/TradingViewMiniWidget';
 import { TradingViewMarketWidget } from './widgets/TradingViewMarketWidget';
+import { SpotifyWidget } from './widgets/SpotifyWidget';
+import { HoroscopeWidget } from './widgets/HoroscopeWidget';
+import { GitHubWidget } from './widgets/GitHubWidget';
+import { WorldClockWidget } from './widgets/WorldClockWidget';
+import { CurrencyConverterWidget } from './widgets/CurrencyConverterWidget';
+import { WaterTrackerWidget } from './widgets/WaterTrackerWidget';
+import { QRCodeWidget } from './widgets/QRCodeWidget';
+import { UnitConverterWidget } from './widgets/UnitConverterWidget';
+import { DictionaryWidget } from './widgets/DictionaryWidget';
+import { UnsplashWidget } from './widgets/UnsplashWidget';
+import { ColorPaletteWidget } from './widgets/ColorPaletteWidget';
+import { MeditationWidget } from './widgets/MeditationWidget';
+import { LocationWidget } from './widgets/LocationWidget';
+import { APITesterWidget } from './widgets/APITesterWidget';
 
 interface WidgetRendererProps {
     widget: Widget;
@@ -69,6 +83,48 @@ const WidgetRendererComponent: React.FC<WidgetRendererProps> = ({ widget, data, 
 
         case 'tradingview-market':
             return <TradingViewMarketWidget {...widgetProps} />;
+
+        case 'spotify':
+            return <SpotifyWidget {...widgetProps} />;
+
+        case 'horoscope':
+            return <HoroscopeWidget {...widgetProps} />;
+
+        case 'github':
+            return <GitHubWidget {...widgetProps} />;
+
+        case 'worldclock':
+            return <WorldClockWidget {...widgetProps} />;
+
+        case 'currency':
+            return <CurrencyConverterWidget {...widgetProps} />;
+
+        case 'water':
+            return <WaterTrackerWidget {...widgetProps} />;
+
+        case 'qrcode':
+            return <QRCodeWidget {...widgetProps} />;
+
+        case 'unitconverter':
+            return <UnitConverterWidget {...widgetProps} />;
+
+        case 'dictionary':
+            return <DictionaryWidget {...widgetProps} />;
+
+        case 'unsplash':
+            return <UnsplashWidget {...widgetProps} />;
+
+        case 'colorpalette':
+            return <ColorPaletteWidget {...widgetProps} />;
+
+        case 'meditation':
+            return <MeditationWidget {...widgetProps} />;
+
+        case 'location':
+            return <LocationWidget {...widgetProps} />;
+
+        case 'apitester':
+            return <APITesterWidget {...widgetProps} />;
 
         default:
             // Handle unknown widget types gracefully

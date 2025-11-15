@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Settings, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, RotateCcw, Settings, Volume2, VolumeX, Timer } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import {
@@ -243,7 +243,7 @@ export const PomodoroWidget: React.FC<PomodoroWidgetProps> = ({
     };
 
     return (
-        <WidgetWrapper id={id} title="Pomodoro Timer">
+        <WidgetWrapper id={id} title="Pomodoro Timer" icon={<Timer className="h-4 w-4" />}>
             <div ref={ref} className="flex flex-col h-full">
                 {/* Header with mode and controls */}
                 {!compact && (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Clock, Calendar, CheckSquare, Link, Quote, Bitcoin, Rss, CloudSun, Timer } from 'lucide-react';
+import { Plus, Clock, Calendar, CheckSquare, Link, Quote, Bitcoin, Rss, CloudSun, Timer, Music, Sparkles, Globe, DollarSign, Droplets, QrCode, Ruler, BookOpen, Image, Palette, Wind, MapPin, Code } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -18,7 +18,7 @@ interface WidgetInfo {
     description: string;
     icon: React.ReactNode;
     preview: string;
-    category: 'productivity' | 'information' | 'finance';
+    category: 'productivity' | 'information' | 'finance' | 'utility' | 'health' | 'lifestyle';
 }
 
 /**
@@ -90,6 +90,70 @@ const WIDGET_CATALOG: WidgetInfo[] = [
         category: 'productivity',
     },
     {
+        type: 'spotify',
+        label: 'Spotify Player',
+        description: 'Embedded Spotify player for music and podcasts',
+        icon: <Music className="h-6 w-6" />,
+        preview: 'Play your favorite playlists, albums, and tracks',
+        category: 'productivity',
+    },
+    {
+        type: 'horoscope',
+        label: 'Daily Horoscope',
+        description: 'Your daily horoscope and zodiac insights',
+        icon: <Sparkles className="h-6 w-6" />,
+        preview: 'Daily readings, lucky numbers, mood, and compatibility',
+        category: 'information',
+    },
+    {
+        type: 'github',
+        label: 'GitHub Profile',
+        description: 'Your GitHub stats and activity',
+        icon: <Bitcoin className="h-6 w-6" />,
+        preview: 'Profile, repos, contributions chart, and stats',
+        category: 'productivity',
+    },
+    {
+        type: 'worldclock',
+        label: 'World Clock',
+        description: 'Multiple timezone display',
+        icon: <Globe className="h-6 w-6" />,
+        preview: 'Track time across different timezones',
+        category: 'utility',
+    },
+    {
+        type: 'currency',
+        label: 'Currency Converter',
+        description: 'Real-time exchange rates',
+        icon: <DollarSign className="h-6 w-6" />,
+        preview: 'Convert between major currencies',
+        category: 'utility',
+    },
+    {
+        type: 'water',
+        label: 'Water Tracker',
+        description: 'Daily hydration reminder',
+        icon: <Droplets className="h-6 w-6" />,
+        preview: 'Track your daily water intake',
+        category: 'health',
+    },
+    {
+        type: 'qrcode',
+        label: 'QR Code Generator',
+        description: 'Quick QR creation for URLs/text',
+        icon: <QrCode className="h-6 w-6" />,
+        preview: 'Generate and download QR codes',
+        category: 'utility',
+    },
+    {
+        type: 'unitconverter',
+        label: 'Unit Converter',
+        description: 'Convert between different units',
+        icon: <Ruler className="h-6 w-6" />,
+        preview: 'CSS, storage, length, weight conversions',
+        category: 'utility',
+    },
+    {
         type: 'tradingview-ticker',
         label: 'Market Ticker',
         description: 'Scrolling ticker tape of market prices',
@@ -121,6 +185,54 @@ const WIDGET_CATALOG: WidgetInfo[] = [
         preview: 'Indices, Forex, and Crypto markets in one widget',
         category: 'finance',
     },
+    {
+        type: 'dictionary',
+        label: 'Dictionary',
+        description: 'Word definitions and translations',
+        icon: <BookOpen className="h-6 w-6" />,
+        preview: 'Look up word meanings, synonyms, and translations',
+        category: 'utility',
+    },
+    {
+        type: 'unsplash',
+        label: 'Unsplash Gallery',
+        description: 'Beautiful random images',
+        icon: <Image className="h-6 w-6" />,
+        preview: 'Daily inspirational photos from Unsplash',
+        category: 'lifestyle',
+    },
+    {
+        type: 'colorpalette',
+        label: 'Color Palette',
+        description: 'Trending color schemes',
+        icon: <Palette className="h-6 w-6" />,
+        preview: 'Generate and copy color palettes with hex codes',
+        category: 'utility',
+    },
+    {
+        type: 'meditation',
+        label: 'Meditation Timer',
+        description: 'Guided breathing exercises',
+        icon: <Wind className="h-6 w-6" />,
+        preview: 'Box breathing and custom meditation timers',
+        category: 'health',
+    },
+    {
+        type: 'location',
+        label: 'Location Info',
+        description: 'Your IP and location details',
+        icon: <MapPin className="h-6 w-6" />,
+        preview: 'IP address, city, country, ISP information',
+        category: 'information',
+    },
+    {
+        type: 'apitester',
+        label: 'API Tester',
+        description: 'Quick API endpoint testing',
+        icon: <Code className="h-6 w-6" />,
+        preview: 'Test GET requests and view JSON responses',
+        category: 'utility',
+    },
 ];
 
 interface WidgetGalleryProps {
@@ -141,7 +253,7 @@ export const WidgetGallery: React.FC<WidgetGalleryProps> = ({
 }) => {
     const { widgets, addWidget } = useWidgetStore();
     const [internalIsOpen, setInternalIsOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<'all' | 'productivity' | 'information' | 'finance'>('all');
+    const [selectedCategory, setSelectedCategory] = useState<'all' | 'productivity' | 'information' | 'finance' | 'utility' | 'health' | 'lifestyle'>('all');
     const [selectedWidget, setSelectedWidget] = useState<WidgetInfo | null>(null);
 
     // Use controlled state if provided, otherwise use internal state
@@ -234,6 +346,33 @@ export const WidgetGallery: React.FC<WidgetGalleryProps> = ({
                                 }`}
                         >
                             Finance
+                        </button>
+                        <button
+                            onClick={() => setSelectedCategory('utility')}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${selectedCategory === 'utility'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'hover:bg-muted'
+                                }`}
+                        >
+                            Utility
+                        </button>
+                        <button
+                            onClick={() => setSelectedCategory('health')}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${selectedCategory === 'health'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'hover:bg-muted'
+                                }`}
+                        >
+                            Health
+                        </button>
+                        <button
+                            onClick={() => setSelectedCategory('lifestyle')}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${selectedCategory === 'lifestyle'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'hover:bg-muted'
+                                }`}
+                        >
+                            Lifestyle
                         </button>
                     </div>
 

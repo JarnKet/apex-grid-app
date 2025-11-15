@@ -4,7 +4,7 @@ import type { WidgetProps, TodoItem } from '../../types/widget';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Checkbox } from '../ui/Checkbox';
-import { Trash2 } from 'lucide-react';
+import { Trash2, CheckSquare } from 'lucide-react';
 
 /**
  * TodoWidget provides task management functionality
@@ -79,7 +79,7 @@ const TodoWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) 
     };
 
     return (
-        <WidgetWrapper id={id} title="Todo List">
+        <WidgetWrapper id={id} title="Todo List" icon={<CheckSquare className="h-4 w-4" />}>
             <div className="flex flex-col h-full">
                 {/* Add task form */}
                 <form

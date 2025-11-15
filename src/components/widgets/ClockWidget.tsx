@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Clock } from 'lucide-react';
 import { WidgetWrapper } from '../WidgetWrapper';
 import { Button } from '../ui/Button';
 import { Switch } from '../ui/Switch';
@@ -106,6 +106,7 @@ const ClockWidgetComponent: React.FC<WidgetProps> = ({ id, data = DEFAULT_DATA, 
         <WidgetWrapper
             id={id}
             title="Clock"
+            icon={<Clock className="h-4 w-4" />}
             actions={
                 <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                     <DialogTrigger asChild>

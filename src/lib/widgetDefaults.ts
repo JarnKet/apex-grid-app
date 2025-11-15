@@ -91,6 +91,54 @@ export const WIDGET_LAYOUT_DEFAULTS: Record<WidgetType, WidgetLayoutDefaults> = 
         defaultW: 6,
         defaultH: 5,
     },
+    spotify: {
+        minW: 3,
+        minH: 3,
+        defaultW: 4,
+        defaultH: 4,
+    },
+    horoscope: {
+        minW: 3,
+        minH: 3,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    github: {
+        minW: 3,
+        minH: 4,
+        defaultW: 4,
+        defaultH: 5,
+    },
+    worldclock: {
+        minW: 3,
+        minH: 3,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    currency: {
+        minW: 3,
+        minH: 4,
+        defaultW: 3,
+        defaultH: 5,
+    },
+    water: {
+        minW: 3,
+        minH: 4,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    qrcode: {
+        minW: 3,
+        minH: 3,
+        defaultW: 3,
+        defaultH: 4,
+    },
+    unitconverter: {
+        minW: 3,
+        minH: 4,
+        defaultW: 3,
+        defaultH: 5,
+    },
 };
 
 /**

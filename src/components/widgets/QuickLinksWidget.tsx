@@ -3,6 +3,7 @@ import { WidgetWrapper } from '../WidgetWrapper';
 import type { WidgetProps, QuickLink } from '../../types/widget';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { Link } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -183,7 +184,7 @@ const QuickLinksWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChan
     };
 
     return (
-        <WidgetWrapper id={id} title="Quick Links">
+        <WidgetWrapper id={id} title="Quick Links" icon={<Link className="h-4 w-4" />}>
             <div className="flex flex-col h-full">
                 {/* Add link button */}
                 <div className="mb-4">

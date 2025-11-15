@@ -3,7 +3,7 @@ import { WidgetWrapper } from '../WidgetWrapper';
 import type { WidgetProps } from '@/types/widget';
 import { fetchRSSFeed, getRelativeTime, TECH_FEEDS, FINANCE_FEEDS, type RSSItem } from '@/services/rssApi';
 import { Button } from '@/components/ui/Button';
-import { ExternalLink, RefreshCw, Settings } from 'lucide-react';
+import { ExternalLink, RefreshCw, Settings, Rss } from 'lucide-react';
 
 interface RSSWidgetData {
     items: RSSItem[];
@@ -87,7 +87,7 @@ const RSSWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) =
     const selectedFeedName = allFeeds.find(f => f.url === selectedFeed)?.name || 'Custom Feed';
 
     return (
-        <WidgetWrapper id={id} title={`Tech News - ${selectedFeedName}`}>
+        <WidgetWrapper id={id} title={`Tech News - ${selectedFeedName}`} icon={<Rss className="h-4 w-4" />}>
             <div className="flex flex-col h-full">
                 {/* Header controls */}
                 <div className="flex items-center justify-between mb-3 px-1">

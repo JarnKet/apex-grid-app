@@ -7,6 +7,7 @@ import { useWidgetStore } from '../stores/useWidgetStore';
 interface WidgetWrapperProps {
     id: string;
     title: string;
+    icon?: ReactNode;
     children: ReactNode;
     actions?: ReactNode;
 }
@@ -64,7 +65,7 @@ class WidgetErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
  * - Widget header with title and remove button
  * - Error boundary for crash isolation
  */
-const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, children, actions }) => {
+const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, icon, children, actions }) => {
     const { removeWidget } = useWidgetStore();
 
     const handleRemove = React.useCallback((e: React.MouseEvent) => {
@@ -83,7 +84,10 @@ const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, child
                 role="toolbar"
                 aria-label={`${title} widget controls`}
             >
-                <CardTitle className="text-sm font-semibold tracking-tight">{title}</CardTitle>
+                <CardTitle className="text-sm font-semibold tracking-tight flex items-center gap-2">
+                    {icon && <span className="flex-shrink-0">{icon}</span>}
+                    {title}
+                </CardTitle>
                 <div className="flex items-center gap-1">
                     {actions}
                     <Button

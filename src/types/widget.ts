@@ -1,6 +1,32 @@
 // Widget type definitions for ApexGrid
 
-export type WidgetType = 'clock' | 'calendar' | 'todo' | 'quicklinks' | 'quote' | 'rss' | 'weather' | 'pomodoro' | 'tradingview-ticker' | 'tradingview-chart' | 'tradingview-mini' | 'tradingview-market';
+export type WidgetType =
+    | 'clock'
+    | 'calendar'
+    | 'todo'
+    | 'quicklinks'
+    | 'quote'
+    | 'rss'
+    | 'weather'
+    | 'pomodoro'
+    | 'tradingview-ticker'
+    | 'tradingview-chart'
+    | 'tradingview-mini'
+    | 'tradingview-market'
+    | 'spotify'
+    | 'horoscope'
+    | 'github'
+    | 'worldclock'
+    | 'currency'
+    | 'water'
+    | 'qrcode'
+    | 'unitconverter'
+    | 'dictionary'
+    | 'unsplash'
+    | 'colorpalette'
+    | 'meditation'
+    | 'location'
+    | 'apitester';
 
 export interface Widget {
     id: string;

@@ -151,6 +151,7 @@ const WeatherWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange 
         <WidgetWrapper
             id={id}
             title="Weather"
+            icon={<CloudSun className="h-4 w-4" />}
             actions={
                 <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                     <DialogTrigger asChild>

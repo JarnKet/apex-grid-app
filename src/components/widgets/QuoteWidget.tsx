@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { WidgetWrapper } from '../WidgetWrapper';
+import { Quote } from 'lucide-react';
 import type { WidgetProps, CachedQuote } from '../../types/widget';
 import { fetchQuote, QuoteApiError } from '../../services/quoteApi';
 
@@ -90,7 +91,7 @@ const QuoteWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange })
     const displayQuote = quote || FALLBACK_QUOTE;
 
     return (
-        <WidgetWrapper id={id} title="Daily Quote">
+        <WidgetWrapper id={id} title="Daily Quote" icon={<Quote className="h-4 w-4" />}>
             <div className="flex flex-col items-center justify-center h-full px-6 py-4">
                 {isLoading && !quote ? (
                     <div className="text-center">

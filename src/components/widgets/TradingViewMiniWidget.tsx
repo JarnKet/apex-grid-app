@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { WidgetWrapper } from '../WidgetWrapper';
-import { Settings } from 'lucide-react';
+import { Settings, BarChart3 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import {
@@ -84,6 +84,7 @@ const TradingViewMiniWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDat
         <WidgetWrapper
             id={id}
             title="Symbol Overview"
+            icon={<BarChart3 className="h-4 w-4" />}
             actions={
                 <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                     <DialogTrigger asChild>
