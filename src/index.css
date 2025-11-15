@@ -59,32 +59,32 @@
     /* 8px border radius */
   }
 
-  /* Dark Mode - WCAG AA compliant color palette */
+  /* Dark Mode - Modern minimal design for developers */
   .dark {
-    --background: 0 0% 4%;
-    /* #0a0a0a - Near black background */
-    --foreground: 0 0% 100%;
-    /* #ffffff - White text (contrast ratio 19.56:1) */
-    --card: 0 0% 10%;
-    /* #1a1a1a - Dark gray card background */
-    --card-foreground: 0 0% 100%;
-    /* #ffffff - White text on cards */
-    --popover: 0 0% 4%;
-    /* #0a0a0a - Near black popover background */
-    --popover-foreground: 0 0% 100%;
-    /* #ffffff - White popover text */
+    --background: 222 47% 4%;
+    /* #09090b - Almost black with blue tint */
+    --foreground: 210 40% 98%;
+    /* #fafafa - Soft white text */
+    --card: 222 47% 7%;
+    /* #111113 - Slightly lighter than background */
+    --card-foreground: 210 40% 98%;
+    /* #fafafa - Soft white on cards */
+    --popover: 222 47% 7%;
+    /* #111113 - Same as card */
+    --popover-foreground: 210 40% 98%;
+    /* #fafafa - Soft white popover text */
     --primary: 217 91% 60%;
-    /* #3b82f6 - Blue accent (contrast ratio 4.54:1 on dark) */
+    /* #3b82f6 - Blue accent */
     --primary-foreground: 0 0% 100%;
     /* #ffffff - White text on primary */
-    --secondary: 0 0% 15%;
-    /* #262626 - Dark gray secondary */
-    --secondary-foreground: 0 0% 100%;
-    /* #ffffff - White text on secondary */
-    --muted: 0 0% 15%;
-    /* #262626 - Muted background */
-    --muted-foreground: 0 0% 63%;
-    /* #a1a1a1 - Light gray muted text (contrast ratio 4.54:1) */
+    --secondary: 222 47% 11%;
+    /* #18181b - Subtle elevation */
+    --secondary-foreground: 210 40% 98%;
+    /* #fafafa - Soft white on secondary */
+    --muted: 222 47% 11%;
+    /* #18181b - Muted background */
+    --muted-foreground: 215 20% 65%;
+    /* #a1a1aa - Neutral muted text */
     --accent: 217 91% 60%;
     /* #3b82f6 - Blue accent */
     --accent-foreground: 0 0% 100%;
@@ -93,10 +93,10 @@
     /* #ef4444 - Red for destructive actions */
     --destructive-foreground: 0 0% 100%;
     /* #ffffff - White text on destructive */
-    --border: 0 0% 16%;
-    /* #2a2a2a - Dark gray borders */
-    --input: 0 0% 16%;
-    /* #2a2a2a - Dark gray input borders */
+    --border: 222 47% 11%;
+    /* #18181b - Subtle borders */
+    --input: 222 47% 11%;
+    /* #18181b - Input borders */
     --ring: 217 91% 60%;
     /* #3b82f6 - Blue focus ring */
   }
@@ -113,40 +113,37 @@
   }
 }
 
-/* Glassmorphism Widget Styling */
+/* Modern Minimal Widget Styling */
 @layer components {
 
-  /* Base glassmorphism effect for widgets */
+  /* Base widget card styling - minimal and clean */
   .widget-glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
 
-  /* Dark mode variant with adjusted opacity */
+  /* Dark mode variant with subtle glow */
   .dark .widget-glass {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 
-  /* Hover effects with smooth transitions */
+  /* Hover effects - subtle and professional */
   .widget-glass-hover {
-    transition: all 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.2s ease;
   }
 
   .widget-glass-hover:hover {
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.2);
-    transform: translateY(-2px) scale(1.02);
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
 
-  /* Dark mode hover effects */
+  /* Dark mode hover effects - subtle accent glow */
   .dark .widget-glass-hover:hover {
-    border-color: rgba(59, 130, 246, 0.6);
-    box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.3);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 12px -2px hsl(var(--primary) / 0.1);
   }
 
   /* Gradient border effect for widgets */

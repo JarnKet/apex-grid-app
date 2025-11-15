@@ -92,11 +92,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={`Search with ${currentEngine.name}...`}
                     className={cn(
-                        'w-full px-4 sm:px-6 py-3 sm:py-4 pr-20 sm:pr-24 text-base sm:text-lg rounded-full',
-                        'bg-white/10 dark:bg-black/20',
-                        'backdrop-blur-md',
-                        'border border-white/20 dark:border-white/10',
-                        'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20',
+                        'w-full px-4 sm:px-6 py-3 sm:py-4 pr-20 sm:pr-24 text-base rounded-lg',
+                        'bg-card',
+                        'border border-border',
+                        'focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50',
                         'transition-all duration-200',
                         'placeholder:text-muted-foreground/60',
                         'text-foreground'
@@ -108,11 +107,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
                     type="submit"
                     className={cn(
                         'absolute right-2 top-1/2 -translate-y-1/2',
-                        'px-4 sm:px-6 py-2 rounded-full',
+                        'px-4 sm:px-6 py-2 rounded-md',
                         'bg-primary text-primary-foreground',
                         'hover:bg-primary/90',
                         'transition-colors duration-200',
-                        'font-medium',
+                        'font-medium text-sm',
                         'flex items-center gap-2'
                     )}
                     aria-label="Submit search"
