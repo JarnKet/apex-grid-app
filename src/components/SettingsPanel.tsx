@@ -270,7 +270,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                     <p className="text-sm text-muted-foreground">
                                         Choose your preferred color theme
                                     </p>
-                                    <div className="grid grid-cols-2 gap-2">
+                                    <div className="grid grid-cols-3 gap-2">
                                         {themes.map((themeOption) => (
                                             <button
                                                 key={themeOption.id}

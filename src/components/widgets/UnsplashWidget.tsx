@@ -24,20 +24,28 @@ const UnsplashWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange
         setError(null);
 
         try {
-            // Using Unsplash Source API (no API key required)
+            // Using Unsplash API (requires access key)
+            // For demo purposes, using picsum.photos as a free alternative
             const randomId = Math.floor(Math.random() * 1000);
-            const imageUrl = `https://source.unsplash.com/800x600/?nature,landscape&sig=${randomId}`;
+            const imageUrl = `https://picsum.photos/800/600?random=${randomId}`;
+
+            // Fetch to verify the image loads
+            const response = await fetch(imageUrl);
+            if (!response.ok) {
+                throw new Error('Failed to fetch image');
+            }
 
             const newData: UnsplashImage = {
                 url: imageUrl,
-                author: 'Unsplash',
-                authorUrl: 'https://unsplash.com',
+                author: 'Lorem Picsum',
+                authorUrl: 'https://picsum.photos',
                 downloadUrl: imageUrl,
                 lastFetched: Date.now(),
             };
 
             onDataChange?.(newData);
         } catch (err) {
+            console.error('Unsplash widget error:', err);
             setError('Failed to load image');
         } finally {
             setLoading(false);

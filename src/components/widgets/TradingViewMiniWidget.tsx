@@ -27,42 +27,30 @@ const DEFAULT_SETTINGS: MiniSettings = {
  * Shows price, change, and mini chart
  */
 const TradingViewMiniWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLIFrameElement>(null);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [tempSymbol, setTempSymbol] = useState('');
 
     const settings: MiniSettings = data?.settings || DEFAULT_SETTINGS;
 
-    useEffect(() => {
-        if (!containerRef.current) return;
+    // Build TradingView widget URL with parameters
+    const widgetConfig = {
+        symbol: settings.symbol,
+        width: '100%',
+        height: '100%',
+        locale: 'en',
+        dateRange: '12M',
+        colorTheme: 'dark',
+        isTransparent: true,
+        autosize: true,
+        largeChartUrl: '',
+    };
 
-        // Clear any existing content
-        containerRef.current.innerHTML = '';
-
-        // Create script element
-        const script = document.createElement('script');
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
-        script.async = true;
-        script.innerHTML = JSON.stringify({
-            symbol: settings.symbol,
-            width: '100%',
-            height: '100%',
-            locale: 'en',
-            dateRange: '12M',
-            colorTheme: 'dark',
-            isTransparent: true,
-            autosize: true,
-            largeChartUrl: '',
-        });
-
-        containerRef.current.appendChild(script);
-
-        return () => {
-            if (containerRef.current) {
-                containerRef.current.innerHTML = '';
-            }
-        };
-    }, [settings]);
+    const widgetUrl = `https://s.tradingview.com/embed-widget/mini-symbol-overview/?${new URLSearchParams({
+        locale: 'en',
+        colorTheme: 'dark',
+        isTransparent: 'true',
+    }).toString()}#${encodeURIComponent(JSON.stringify(widgetConfig))}`;
 
     const handleSaveSettings = () => {
         if (tempSymbol.trim()) {
@@ -131,8 +119,17 @@ const TradingViewMiniWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDat
                 </Dialog>
             }
         >
-            <div className="tradingview-widget-container h-full" ref={containerRef}>
-                <div className="tradingview-widget-container__widget h-full"></div>
+            <div className="h-full w-full">
+                <iframe
+                    ref={containerRef}
+                    src={widgetUrl}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                    }}
+                    title="TradingView Mini Symbol Overview"
+                />
             </div>
         </WidgetWrapper>
     );

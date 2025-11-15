@@ -8,46 +8,43 @@ import type { WidgetProps } from '../../types/widget';
  * Shows real-time prices scrolling horizontally
  */
 const TradingViewTickerWidgetComponent: React.FC<WidgetProps> = ({ id }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    useEffect(() => {
-        if (!containerRef.current) return;
+    // Build TradingView widget URL with parameters
+    const widgetConfig = {
+        symbols: [
+            { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' },
+            { proName: 'FOREXCOM:NSXUSD', title: 'US 100' },
+            { proName: 'FX_IDC:EURUSD', title: 'EUR to USD' },
+            { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' },
+            { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' },
+        ],
+        showSymbolLogo: true,
+        colorTheme: 'dark',
+        isTransparent: true,
+        displayMode: 'regular',
+        locale: 'en',
+    };
 
-        // Clear any existing content
-        containerRef.current.innerHTML = '';
-
-        // Create script element
-        const script = document.createElement('script');
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
-        script.async = true;
-        script.innerHTML = JSON.stringify({
-            symbols: [
-                { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' },
-                { proName: 'FOREXCOM:NSXUSD', title: 'US 100' },
-                { proName: 'FX_IDC:EURUSD', title: 'EUR to USD' },
-                { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' },
-                { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' },
-            ],
-            showSymbolLogo: true,
-            colorTheme: 'dark',
-            isTransparent: true,
-            displayMode: 'regular',
-            locale: 'en',
-        });
-
-        containerRef.current.appendChild(script);
-
-        return () => {
-            if (containerRef.current) {
-                containerRef.current.innerHTML = '';
-            }
-        };
-    }, []);
+    const widgetUrl = `https://s.tradingview.com/embed-widget/ticker-tape/?${new URLSearchParams({
+        locale: 'en',
+        colorTheme: 'dark',
+        isTransparent: 'true',
+    }).toString()}#${encodeURIComponent(JSON.stringify(widgetConfig))}`;
 
     return (
         <WidgetWrapper id={id} title="Market Ticker" icon={<TrendingUp className="h-4 w-4" />}>
-            <div className="tradingview-widget-container h-full w-full flex-1" ref={containerRef} style={{ minHeight: '120px' }}>
-                <div className="tradingview-widget-container__widget h-full w-full"></div>
+            <div className="h-full w-full" style={{ minHeight: '120px' }}>
+                <iframe
+                    ref={iframeRef}
+                    src={widgetUrl}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                    }}
+                    title="TradingView Ticker Tape"
+                />
             </div>
         </WidgetWrapper>
     );

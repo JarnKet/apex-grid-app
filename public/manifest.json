@@ -14,8 +14,12 @@
         "https://api.quotable.io/*",
         "https://api.rss2json.com/*",
         "https://api.coingecko.com/*",
-        "https://api.open-meteo.com/*"
+        "https://api.open-meteo.com/*",
+        "https://picsum.photos/*"
     ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://s.tradingview.com https://www.tradingview.com;"
+    },
     "icons": {
         "16": "icons/icon16.png",
         "48": "icons/icon48.png",

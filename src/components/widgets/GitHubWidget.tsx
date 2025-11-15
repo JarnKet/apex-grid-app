@@ -93,7 +93,7 @@ const GitHubWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }
     };
 
     /**
-     * Initialize data
+     * Initialize data - fetch on mount if username exists
      */
     useEffect(() => {
         if (username) {
@@ -102,6 +102,7 @@ const GitHubWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }
                 fetchGitHubData();
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /**
