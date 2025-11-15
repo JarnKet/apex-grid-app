@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Clock, Calendar, CheckSquare, Link, Quote, Bitcoin, Rss, CloudSun, Timer, Music, Sparkles, Globe, DollarSign, Droplets, QrCode, Ruler, BookOpen, Image, Palette, Wind, MapPin, Code } from 'lucide-react';
+import { Plus, Clock, Calendar, CheckSquare, Link, Quote, Bitcoin, Rss, CloudSun, Timer, Music, Sparkles, Globe, DollarSign, Droplets, QrCode, Ruler, BookOpen, Image, Palette, Wind, MapPin, Code, TrendingUp } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -232,6 +232,30 @@ const WIDGET_CATALOG: WidgetInfo[] = [
         icon: <Code className="h-6 w-6" />,
         preview: 'Test GET requests and view JSON responses',
         category: 'utility',
+    },
+    {
+        type: 'lifeprogress',
+        label: 'Life Progress',
+        description: 'Visualize time progress through life',
+        icon: <TrendingUp className="h-6 w-6" />,
+        preview: 'Track progress through life, year, quarter, month, week, and day',
+        category: 'lifestyle',
+    },
+    {
+        type: 'counter',
+        label: 'Counter',
+        description: 'Track anything with increment/decrement',
+        icon: <Plus className="h-6 w-6" />,
+        preview: 'Customizable counter with adjustable step size and reset button',
+        category: 'productivity',
+    },
+    {
+        type: 'countdown',
+        label: 'Countdown',
+        description: 'Count down to important events',
+        icon: <Calendar className="h-6 w-6" />,
+        preview: 'Live countdown timer showing days, hours, minutes, and seconds',
+        category: 'productivity',
     },
 ];
 

@@ -26,7 +26,10 @@ export type WidgetType =
     | 'colorpalette'
     | 'meditation'
     | 'location'
-    | 'apitester';
+    | 'apitester'
+    | 'lifeprogress'
+    | 'counter'
+    | 'countdown';
 
 export interface Widget {
     id: string;

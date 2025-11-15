@@ -26,6 +26,9 @@ import { ColorPaletteWidget } from './widgets/ColorPaletteWidget';
 import { MeditationWidget } from './widgets/MeditationWidget';
 import { LocationWidget } from './widgets/LocationWidget';
 import { APITesterWidget } from './widgets/APITesterWidget';
+import { LifeProgressWidget } from './widgets/LifeProgressWidget';
+import { CounterWidget } from './widgets/CounterWidget';
+import { CountdownWidget } from './widgets/CountdownWidget';
 
 interface WidgetRendererProps {
     widget: Widget;
@@ -125,6 +128,15 @@ const WidgetRendererComponent: React.FC<WidgetRendererProps> = ({ widget, data, 
 
         case 'apitester':
             return <APITesterWidget {...widgetProps} />;
+
+        case 'lifeprogress':
+            return <LifeProgressWidget {...widgetProps} />;
+
+        case 'counter':
+            return <CounterWidget {...widgetProps} />;
+
+        case 'countdown':
+            return <CountdownWidget {...widgetProps} />;
 
         default:
             // Handle unknown widget types gracefully
