@@ -72,16 +72,16 @@ const WidgetWrapperComponent: React.FC<WidgetWrapperProps> = ({ id, title, child
 
     return (
         <Card
-            className="h-full flex flex-col overflow-hidden widget-glass widget-glass-hover widget-gradient-border animate-fade-in"
+            className="h-full flex flex-col overflow-hidden widget-glass widget-glass-hover animate-fade-in"
             role="region"
             aria-label={`${title} widget`}
         >
             <CardHeader
-                className="flex-row items-center justify-between space-y-0 pb-2 cursor-move widget-drag-handle"
+                className="flex-row items-center justify-between space-y-0 pb-3 cursor-move widget-drag-handle border-b border-border/50"
                 role="toolbar"
                 aria-label={`${title} widget controls`}
             >
-                <CardTitle className="text-lg font-medium">{title}</CardTitle>
+                <CardTitle className="text-sm font-semibold tracking-tight">{title}</CardTitle>
                 <Button
                     variant="ghost"
                     size="icon"
