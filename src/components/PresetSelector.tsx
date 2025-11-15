@@ -2,29 +2,21 @@ import React, { useState } from 'react';
 import { PRESET_LAYOUTS } from '../lib/presetLayouts';
 import { useWidgetStore } from '../stores/useWidgetStore';
 import { useLayoutStore } from '../stores/useLayoutStore';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from './ui/Dialog';
 import { Button } from './ui/Button';
-import { Zap } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 /**
  * PresetSelector component
- * Allows users to quickly switch between preset dashboard layouts
+ * Displays preset dashboard layouts in a scrollable grid
+ * Designed to be embedded in the Settings Panel
  */
 export const PresetSelector: React.FC = () => {
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<string | null>(null);
     const { setWidgets } = useWidgetStore();
     const { setLayout } = useLayoutStore();
 
     const handleApplyPreset = async (presetId: string) => {
-        setLoading(true);
+        setLoading(presetId);
         try {
             const preset = PRESET_LAYOUTS.find(p => p.id === presetId);
             if (!preset) return;
@@ -39,86 +31,73 @@ export const PresetSelector: React.FC = () => {
                 storage.set('widgets', preset.widgets),
                 storage.set('layout', preset.layout),
             ]);
-
-            setOpen(false);
         } catch (error) {
             console.error('Failed to apply preset:', error);
         } finally {
-            setLoading(false);
+            setLoading(null);
         }
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    title="Apply preset dashboard layout"
-                >
-                    <Zap className="h-4 w-4" />
-                    Presets
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle>Dashboard Presets</DialogTitle>
-                    <DialogDescription>
-                        Choose a preset layout optimized for your workflow
-                    </DialogDescription>
-                </DialogHeader>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-                    {PRESET_LAYOUTS.map((preset) => (
-                        <div
-                            key={preset.id}
-                            className="p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-                        >
-                            <div className="flex items-start justify-between mb-2">
-                                <div>
-                                    <div className="text-2xl mb-2">{preset.icon}</div>
-                                    <h3 className="font-semibold text-lg">{preset.name}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">
-                                        {preset.description}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="mt-4">
-                                <p className="text-xs text-muted-foreground mb-2">
-                                    Includes {preset.widgets.length} widgets:
+        <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-2 settings-scrollbar">
+                {PRESET_LAYOUTS.map((preset) => (
+                    <div
+                        key={preset.id}
+                        className={cn(
+                            "group relative p-4 border-2 rounded-lg transition-all",
+                            "hover:border-primary/50 hover:shadow-md"
+                        )}
+                    >
+                        <div className="flex items-start gap-3 mb-3">
+                            <div className="text-3xl flex-shrink-0">{preset.icon}</div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-base mb-1">{preset.name}</h3>
+                                <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {preset.description}
                                 </p>
-                                <div className="flex flex-wrap gap-1">
-                                    {preset.widgets.map((widget) => (
-                                        <span
-                                            key={widget.id}
-                                            className="inline-block px-2 py-1 text-xs bg-muted rounded"
-                                        >
-                                            {widget.type.replace('-', ' ')}
-                                        </span>
-                                    ))}
-                                </div>
                             </div>
-
-                            <Button
-                                onClick={() => handleApplyPreset(preset.id)}
-                                disabled={loading}
-                                className="w-full mt-4"
-                            >
-                                Apply {preset.name} Layout
-                            </Button>
                         </div>
-                    ))}
-                </div>
 
-                <div className="bg-muted/50 p-3 rounded-md text-sm text-muted-foreground">
-                    <p>
-                        💡 <strong>Tip:</strong> Applying a preset will replace your current dashboard layout.
-                        You can always customize it afterwards by dragging and resizing widgets.
-                    </p>
-                </div>
-            </DialogContent>
-        </Dialog>
+                        <div className="mb-3">
+                            <p className="text-xs text-muted-foreground mb-1.5">
+                                {preset.widgets.length} widgets
+                            </p>
+                            <div className="flex flex-wrap gap-1">
+                                {preset.widgets.slice(0, 6).map((widget) => (
+                                    <span
+                                        key={widget.id}
+                                        className="inline-block px-1.5 py-0.5 text-xs bg-muted rounded capitalize"
+                                    >
+                                        {widget.type.replace(/-/g, ' ')}
+                                    </span>
+                                ))}
+                                {preset.widgets.length > 6 && (
+                                    <span className="inline-block px-1.5 py-0.5 text-xs text-muted-foreground">
+                                        +{preset.widgets.length - 6} more
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <Button
+                            onClick={() => handleApplyPreset(preset.id)}
+                            disabled={loading === preset.id}
+                            size="sm"
+                            className="w-full"
+                        >
+                            {loading === preset.id ? 'Applying...' : 'Apply Layout'}
+                        </Button>
+                    </div>
+                ))}
+            </div>
+
+            <div className="bg-muted/50 p-3 rounded-lg text-xs text-muted-foreground">
+                <p>
+                    💡 <strong>Tip:</strong> Applying a preset replaces your current layout.
+                    You can customize it afterwards by dragging and resizing widgets.
+                </p>
+            </div>
+        </div>
     );
 };

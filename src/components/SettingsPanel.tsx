@@ -405,23 +405,27 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
                         {activeTab === 'layout' && (
                             <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium flex items-center gap-2">
-                                        <Zap className="h-4 w-4" />
-                                        Dashboard Presets
-                                    </label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Quick-apply optimized layouts for different workflows
-                                    </p>
+                                <div>
+                                    <div className="mb-4">
+                                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                                            <Zap className="h-5 w-5" />
+                                            Dashboard Presets
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                            Quick-apply optimized layouts for different workflows
+                                        </p>
+                                    </div>
                                     <PresetSelector />
                                 </div>
 
                                 <div className="border-t border-border pt-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">Layout Width</label>
-                                        <p className="text-sm text-muted-foreground">
-                                            Choose how wide the dashboard should be
-                                        </p>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="text-sm font-medium">Layout Width</label>
+                                            <p className="text-sm text-muted-foreground mt-1">
+                                                Choose how wide the dashboard should be
+                                            </p>
+                                        </div>
                                         <div className="grid grid-cols-2 gap-2">
                                             {[
                                                 { value: 'compact' as LayoutWidth, label: 'Compact', desc: '1024px max' },

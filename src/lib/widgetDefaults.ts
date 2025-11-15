@@ -175,6 +175,24 @@ export const WIDGET_LAYOUT_DEFAULTS: Record<WidgetType, WidgetLayoutDefaults> = 
         defaultW: 5,
         defaultH: 5,
     },
+    lifeprogress: {
+        minW: 3,
+        minH: 3,
+        defaultW: 4,
+        defaultH: 4,
+    },
+    counter: {
+        minW: 2,
+        minH: 2,
+        defaultW: 3,
+        defaultH: 3,
+    },
+    countdown: {
+        minW: 3,
+        minH: 3,
+        defaultW: 3,
+        defaultH: 3,
+    },
 };
 
 /**
