@@ -1,8 +1,11 @@
 {
-  "name": "apex-grid-app",
+  "name": "apexgrid",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Transform your new tab into a beautiful, customizable dashboard",
+  "author": "ApexGrid Team",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
