@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Settings, User, Palette, Layout as LayoutIcon, Zap } from 'lucide-react';
-import { FaGoogle, FaYahoo, FaSearch } from 'react-icons/fa';
-import { SiDuckduckgo } from 'react-icons/si';
 import { PresetSelector } from './PresetSelector';
 import {
     Dialog,
@@ -27,13 +25,6 @@ interface SettingsPanelProps {
     onOpenChange?: (open: boolean) => void;
 }
 
-const SEARCH_ENGINE_OPTIONS = [
-    { value: 'google' as const, label: 'Google', icon: <FaGoogle className="h-4 w-4" /> },
-    { value: 'bing' as const, label: 'Bing', icon: <FaSearch className="h-4 w-4 text-blue-500" /> },
-    { value: 'duckduckgo' as const, label: 'DuckDuckGo', icon: <SiDuckduckgo className="h-4 w-4" /> },
-    { value: 'yahoo' as const, label: 'Yahoo', icon: <FaYahoo className="h-4 w-4" /> },
-];
-
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     isOpen: controlledIsOpen,
     onOpenChange: controlledOnOpenChange
@@ -45,17 +36,15 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         backgroundPattern,
         layoutWidth,
         userName,
-        searchEngine,
         setTheme,
         setThemeId,
         setBackground,
         setBackgroundPattern,
         setLayoutWidth,
-        setUserName,
-        setSearchEngine
+        setUserName
     } = useSettingsStore();
 
-    const [activeTab, setActiveTab] = useState<SettingsTab>('personalization');
+    const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
     const [backgroundMode, setBackgroundMode] = useState<'preset' | 'custom'>(
         background ? 'custom' : 'preset'
     );
@@ -69,7 +58,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     const setIsOpen = controlledOnOpenChange || setInternalIsOpen;
 
     const tabs = [
-        { id: 'personalization' as const, label: 'Personalization', icon: User },
+        // { id: 'personalization' as const, label: 'Personalization', icon: User },
         { id: 'appearance' as const, label: 'Appearance', icon: Palette },
         { id: 'layout' as const, label: 'Layout', icon: LayoutIcon },
     ];
@@ -145,14 +134,6 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         }
     };
 
-    const handleSearchEngineChange = async (engine: 'google' | 'bing' | 'duckduckgo' | 'yahoo') => {
-        try {
-            await setSearchEngine(engine);
-        } catch (error) {
-            console.error('Failed to update search engine:', error);
-        }
-    };
-
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
@@ -200,7 +181,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
                     {/* Content Area */}
                     <div className="flex-1 overflow-y-auto pl-6 settings-scrollbar">
-                        {activeTab === 'personalization' && (
+                        {/* {activeTab === 'personalization' && (
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <label htmlFor="username-input" className="text-sm font-medium">
@@ -235,33 +216,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Search Engine</label>
+                                    <label className="text-sm font-medium">Search</label>
                                     <p className="text-sm text-muted-foreground">
-                                        Default search engine for the search bar
+                                        The search bar uses your browser's default search engine. You can change this in your Chrome settings.
                                     </p>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {SEARCH_ENGINE_OPTIONS.map((option) => (
-                                            <button
-                                                key={option.value}
-                                                onClick={() => handleSearchEngineChange(option.value)}
-                                                className={cn(
-                                                    'flex items-center gap-3 p-3 rounded-lg border-2 transition-all',
-                                                    searchEngine === option.value
-                                                        ? 'border-primary bg-primary/10'
-                                                        : 'border-border hover:border-primary/50'
-                                                )}
-                                            >
-                                                {option.icon}
-                                                <span className="text-sm font-medium">{option.label}</span>
-                                                {searchEngine === option.value && (
-                                                    <span className="ml-auto text-primary">✓</span>
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
                         {activeTab === 'appearance' && (
                             <div className="space-y-6">

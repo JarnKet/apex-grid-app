@@ -63,7 +63,7 @@ All application state is managed through three Zustand stores with Chrome Storag
 
 - **`useLayoutStore`** - Grid layout positions (react-grid-layout format)
 - **`useWidgetStore`** - Widget instances and widget-specific data (todos, links, cached API responses)
-- **`useSettingsStore`** - App preferences (theme, background, userName, searchEngine)
+- **`useSettingsStore`** - App preferences (theme, background, userName)
 
 **Key Pattern**: All stores follow the same initialization flow:
 1. Component mounts and calls `initialize*()` method

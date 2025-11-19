@@ -97,7 +97,6 @@ This document provides comprehensive guidance for AI assistants working on the A
 │   │   ├── ErrorBoundary.tsx  # Error handling wrapper
 │   │   ├── GridLayout.tsx     # react-grid-layout wrapper
 │   │   ├── Greeting.tsx       # Time-based greeting component
-│   │   ├── SearchBar.tsx      # Google search bar
 │   │   ├── SettingsPanel.tsx  # Settings UI with theme toggle
 │   │   ├── WidgetRenderer.tsx # Widget factory component
 │   │   └── WidgetWrapper.tsx  # Shared widget container

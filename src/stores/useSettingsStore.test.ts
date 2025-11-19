@@ -11,7 +11,6 @@ describe('useSettingsStore', () => {
             theme: 'dark',
             background: null,
             userName: null,
-            searchEngine: 'google',
             isInitialized: false,
         });
         // Clear document classes
@@ -102,7 +101,6 @@ describe('useSettingsStore', () => {
                 backgroundPattern: 'dots',
                 layoutWidth: 'full',
                 userName: 'TestUser',
-                searchEngine: 'bing',
             };
 
             await chrome.storage.sync.set({ settings: storedSettings });
@@ -112,13 +110,12 @@ describe('useSettingsStore', () => {
             expect(useSettingsStore.getState().theme).toBe('light');
             expect(useSettingsStore.getState().background).toBe('#abcdef');
             expect(useSettingsStore.getState().userName).toBe('TestUser');
-            expect(useSettingsStore.getState().searchEngine).toBe('bing');
             expect(useSettingsStore.getState().isInitialized).toBe(true);
         });
 
         it('should apply theme from storage to document', async () => {
             await chrome.storage.sync.set({
-                settings: { theme: 'dark', background: null, userName: null, searchEngine: 'google' },
+                settings: { theme: 'dark', background: null, userName: null },
             });
 
             await useSettingsStore.getState().initializeSettings();
@@ -132,16 +129,17 @@ describe('useSettingsStore', () => {
             expect(useSettingsStore.getState().theme).toBe('dark');
             expect(useSettingsStore.getState().background).toBeNull();
             expect(useSettingsStore.getState().userName).toBeNull();
-            expect(useSettingsStore.getState().searchEngine).toBe('google');
             expect(useSettingsStore.getState().isInitialized).toBe(true);
 
             // Should persist defaults
             const storageState = getMockStorageState();
             expect(storageState.settings).toEqual({
                 theme: 'dark',
+                themeId: 'mono',
                 background: null,
-                userName: null,
-                searchEngine: 'google'
+                backgroundPattern: 'dots',
+                layoutWidth: 'full',
+                userName: null
             });
         });
 
@@ -166,7 +164,6 @@ describe('useSettingsStore', () => {
             expect(useSettingsStore.getState().theme).toBe('dark');
             expect(useSettingsStore.getState().background).toBeNull();
             expect(useSettingsStore.getState().userName).toBeNull();
-            expect(useSettingsStore.getState().searchEngine).toBe('google');
             expect(useSettingsStore.getState().isInitialized).toBe(true);
         });
     });
@@ -223,50 +220,12 @@ describe('useSettingsStore', () => {
         });
 
         it('should preserve other settings when updating userName', async () => {
-            useSettingsStore.setState({ theme: 'light', searchEngine: 'bing' });
+            useSettingsStore.setState({ theme: 'light' });
 
             await useSettingsStore.getState().setUserName('Jane');
 
             const storageState = getMockStorageState();
             expect(storageState.settings.theme).toBe('light');
-            expect(storageState.settings.searchEngine).toBe('bing');
-        });
-    });
-
-    describe('setSearchEngine', () => {
-        it('should update searchEngine and persist to storage', async () => {
-            await useSettingsStore.getState().setSearchEngine('duckduckgo');
-
-            // Check state updated
-            expect(useSettingsStore.getState().searchEngine).toBe('duckduckgo');
-
-            // Check persisted to storage
-            const storageState = getMockStorageState();
-            expect(storageState.settings.searchEngine).toBe('duckduckgo');
-        });
-
-        it('should support all search engine options', async () => {
-            const engines: Array<'google' | 'bing' | 'duckduckgo' | 'yahoo'> = [
-                'google',
-                'bing',
-                'duckduckgo',
-                'yahoo',
-            ];
-
-            for (const engine of engines) {
-                await useSettingsStore.getState().setSearchEngine(engine);
-                expect(useSettingsStore.getState().searchEngine).toBe(engine);
-            }
-        });
-
-        it('should preserve other settings when updating searchEngine', async () => {
-            useSettingsStore.setState({ theme: 'light', userName: 'John' });
-
-            await useSettingsStore.getState().setSearchEngine('yahoo');
-
-            const storageState = getMockStorageState();
-            expect(storageState.settings.theme).toBe('light');
-            expect(storageState.settings.userName).toBe('John');
         });
     });
 });

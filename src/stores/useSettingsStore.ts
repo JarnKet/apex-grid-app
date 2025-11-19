@@ -13,7 +13,6 @@ interface SettingsStore {
     backgroundPattern: BackgroundPattern;
     layoutWidth: LayoutWidth;
     userName: string | null;
-    searchEngine: 'google' | 'bing' | 'duckduckgo' | 'yahoo';
     isInitialized: boolean;
     setTheme: (theme: 'dark' | 'light') => Promise<void>;
     setThemeId: (themeId: string) => Promise<void>;
@@ -21,7 +20,6 @@ interface SettingsStore {
     setBackgroundPattern: (pattern: BackgroundPattern) => Promise<void>;
     setLayoutWidth: (width: LayoutWidth) => Promise<void>;
     setUserName: (userName: string | null) => Promise<void>;
-    setSearchEngine: (searchEngine: 'google' | 'bing' | 'duckduckgo' | 'yahoo') => Promise<void>;
     initializeSettings: () => Promise<void>;
 }
 
@@ -33,7 +31,6 @@ const DEFAULT_SETTINGS: AppSettings = {
     backgroundPattern: 'dots',
     layoutWidth: 'full',
     userName: null,
-    searchEngine: 'google',
 };
 
 /**
@@ -56,7 +53,6 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
     layoutWidth: DEFAULT_SETTINGS.layoutWidth,
     userName: DEFAULT_SETTINGS.userName,
-    searchEngine: DEFAULT_SETTINGS.searchEngine,
     isInitialized: false,
 
     /**
@@ -75,8 +71,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             applyThemeColors(themeId, theme);
 
             // Get current settings and update theme
-            const { themeId: currentThemeId, background, backgroundPattern, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, themeId: currentThemeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { themeId: currentThemeId, background, backgroundPattern, layoutWidth, userName } = get();
+            const updatedSettings: AppSettings = { theme, themeId: currentThemeId, background, backgroundPattern, layoutWidth, userName };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -99,8 +95,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             applyThemeColors(themeId, theme);
 
             // Get current settings and update themeId
-            const { theme: currentTheme, background, backgroundPattern, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme: currentTheme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme: currentTheme, background, backgroundPattern, layoutWidth, userName } = get();
+            const updatedSettings: AppSettings = { theme: currentTheme, themeId, background, backgroundPattern, layoutWidth, userName };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -119,8 +115,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ background });
 
             // Get current settings and update background
-            const { theme, themeId, backgroundPattern, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, backgroundPattern, layoutWidth, userName } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -139,8 +135,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ backgroundPattern });
 
             // Get current settings and update pattern
-            const { theme, themeId, background, layoutWidth, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, layoutWidth, userName } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -159,8 +155,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ layoutWidth });
 
             // Get current settings and update width
-            const { theme, themeId, background, backgroundPattern, userName, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, backgroundPattern, userName } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
@@ -190,33 +186,13 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({ userName });
 
             // Get current settings and update userName
-            const { theme, themeId, background, backgroundPattern, layoutWidth, searchEngine } = get();
-            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
+            const { theme, themeId, background, backgroundPattern, layoutWidth } = get();
+            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName };
 
             // Persist to Chrome Storage
             await storage.set('settings', updatedSettings);
         } catch (error) {
             console.error('Failed to update user name:', error);
-            throw error;
-        }
-    },
-
-    /**
-     * Set search engine preference and persist to Chrome Storage
-     */
-    setSearchEngine: async (searchEngine: 'google' | 'bing' | 'duckduckgo' | 'yahoo') => {
-        try {
-            // Update local state first for immediate UI feedback
-            set({ searchEngine });
-
-            // Get current settings and update searchEngine
-            const { theme, themeId, background, backgroundPattern, layoutWidth, userName } = get();
-            const updatedSettings: AppSettings = { theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine };
-
-            // Persist to Chrome Storage
-            await storage.set('settings', updatedSettings);
-        } catch (error) {
-            console.error('Failed to update search engine:', error);
             throw error;
         }
     },
@@ -239,9 +215,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                 const userName = storedSettings.userName !== undefined
                     ? storedSettings.userName
                     : DEFAULT_SETTINGS.userName;
-                const searchEngine = storedSettings.searchEngine || DEFAULT_SETTINGS.searchEngine;
 
-                set({ theme, themeId, background, backgroundPattern, layoutWidth, userName, searchEngine, isInitialized: true });
+                set({ theme, themeId, background, backgroundPattern, layoutWidth, userName, isInitialized: true });
 
                 // Apply theme to document root
                 applyTheme(theme);
@@ -257,7 +232,6 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                     backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
                     layoutWidth: DEFAULT_SETTINGS.layoutWidth,
                     userName: DEFAULT_SETTINGS.userName,
-                    searchEngine: DEFAULT_SETTINGS.searchEngine,
                     isInitialized: true,
                 });
 
@@ -277,7 +251,6 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                 backgroundPattern: DEFAULT_SETTINGS.backgroundPattern,
                 layoutWidth: DEFAULT_SETTINGS.layoutWidth,
                 userName: DEFAULT_SETTINGS.userName,
-                searchEngine: DEFAULT_SETTINGS.searchEngine,
                 isInitialized: true,
             });
             applyTheme(DEFAULT_SETTINGS.theme);

@@ -3,7 +3,6 @@ import { GridLayout } from './GridLayout';
 import { WidgetRenderer } from './WidgetRenderer';
 import { SettingsPanel } from './SettingsPanel';
 import { WidgetGallery } from './WidgetGallery';
-import { SearchBar } from './SearchBar';
 import { useLayoutStore } from '../stores/useLayoutStore';
 import { useWidgetStore } from '../stores/useWidgetStore';
 import { useSettingsStore } from '../stores/useSettingsStore';
@@ -164,11 +163,8 @@ export const Dashboard: React.FC = () => {
             <WidgetGallery />
             <SettingsPanel isOpen={settingsOpen} onOpenChange={setSettingsOpen} />
 
-            {/* SearchBar container with responsive max-width */}
+            {/* GridLayout container with responsive max-width */}
             <div className={`${getContainerClass()} mx-auto transition-all duration-300`}>
-                {/* SearchBar with integrated greeting */}
-                <SearchBar className="mb-8 animate-slide-in-from-top" />
-
                 {/* GridLayout with widgets */}
                 <GridLayout>
                     {enabledWidgets.map((widget) => (

@@ -1,6 +1,6 @@
 # Privacy Policy for ApexGrid
 
-**Last Updated:** November 15, 2025
+**Last Updated:** November 19, 2025
 
 ## Introduction
 

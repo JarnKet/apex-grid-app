@@ -1,6 +1,6 @@
 # ApexGrid - Chrome New Tab Extension
 
-A beautiful, productive dashboard that replaces your Chrome new tab page with customizable widgets.
+A beautiful, customizable dashboard that replaces your Chrome new tab page with drag-and-drop widgets.
 
 ## Features
 
@@ -12,7 +12,8 @@ A beautiful, productive dashboard that replaces your Chrome new tab page with cu
 - 🔗 Quick links widget
 - 💬 Daily quote widget
 - 💱 Currency exchange widget
-- 🌓 Dark/light theme support
+- 🎨 Multiple themes and customizable backgrounds
+- 🌓 Dark/light mode support
 - ☁️ Cross-device sync via Chrome Storage
 
 ## Tech Stack

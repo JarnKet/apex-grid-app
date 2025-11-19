@@ -18,7 +18,6 @@ export interface WidgetDataSchema {
     currency?: CachedCurrency;
 }
 
-export type SearchEngine = 'google' | 'bing' | 'duckduckgo' | 'yahoo';
 export type LayoutWidth = 'compact' | 'standard' | 'wide' | 'full';
 
 export interface AppSettings {
@@ -28,7 +27,6 @@ export interface AppSettings {
     backgroundPattern: BackgroundPattern;
     layoutWidth: LayoutWidth;
     userName: string | null;
-    searchEngine: SearchEngine;
 }
 
 export interface StorageSchema {
