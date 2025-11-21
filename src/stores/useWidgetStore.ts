@@ -131,7 +131,7 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
         // Persist changes to storage
         Promise.all([
             storage.set('widgets', updatedWidgets),
-            storage.set('widgetData', updatedWidgetData),
+            storage.remove(`widgetData_${id}`), // Remove individual widget data
         ]).catch(error => {
             console.error('Failed to persist widget removal:', error);
         });
@@ -139,6 +139,7 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
 
     /**
      * Update widget-specific data and persist to Chrome Storage
+     * Each widget's data is stored separately to avoid quota limits
      */
     updateWidgetData: async (id: string, data: WidgetDataSchema) => {
         try {
@@ -153,8 +154,9 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
             // Update local state first for immediate UI feedback
             set({ widgetData: updatedWidgetData });
 
-            // Persist to Chrome Storage
-            await storage.set('widgetData', updatedWidgetData);
+            // Persist each widget's data separately with a unique key
+            // This avoids the 8KB per item quota limit
+            await storage.set(`widgetData_${id}`, data);
         } catch (error) {
             console.error(`Failed to update widget data for ${id}:`, error);
             throw error;
@@ -163,10 +165,12 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
 
     /**
      * Initialize widgets from Chrome Storage on app load
+     * Loads each widget's data separately to avoid quota limits
      */
     initializeWidgets: async () => {
         try {
-            const [storedWidgets, storedWidgetData] = await Promise.all([
+            // First, try to get the old widgetData format for migration
+            const [storedWidgets, oldWidgetData] = await Promise.all([
                 storage.get<Widget[]>('widgets'),
                 storage.get<WidgetData>('widgetData'),
             ]);
@@ -176,19 +180,33 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
                 ? storedWidgets
                 : DEFAULT_WIDGETS;
 
-            // Use stored widget data or empty object
-            const widgetData = storedWidgetData && typeof storedWidgetData === 'object'
-                ? storedWidgetData
-                : {};
+            // Load each widget's data separately
+            const widgetData: WidgetData = {};
+
+            for (const widget of widgets) {
+                const data = await storage.get<WidgetDataSchema>(`widgetData_${widget.id}`);
+                if (data) {
+                    widgetData[widget.id] = data;
+                }
+            }
+
+            // Migration: If old format exists, migrate to new format
+            if (oldWidgetData && typeof oldWidgetData === 'object' && Object.keys(oldWidgetData).length > 0) {
+                console.log('Migrating widget data to new storage format...');
+                for (const [widgetId, data] of Object.entries(oldWidgetData)) {
+                    await storage.set(`widgetData_${widgetId}`, data);
+                    widgetData[widgetId] = data;
+                }
+                // Remove old format
+                await storage.remove('widgetData');
+                console.log('Migration complete');
+            }
 
             set({ widgets, widgetData, isInitialized: true });
 
             // If using defaults, persist them
             if (!storedWidgets || storedWidgets.length === 0) {
                 await storage.set('widgets', DEFAULT_WIDGETS);
-            }
-            if (!storedWidgetData) {
-                await storage.set('widgetData', {});
             }
         } catch (error) {
             console.error('Failed to initialize widgets from storage:', error);
