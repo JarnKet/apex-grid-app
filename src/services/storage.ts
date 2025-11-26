@@ -20,6 +20,13 @@ export class StorageValidationError extends Error {
 }
 
 /**
+ * Calculate approximate size of data in bytes
+ */
+function getDataSize(value: any): number {
+    return new Blob([JSON.stringify(value)]).size;
+}
+
+/**
  * Validates data before storage operations
  */
 function validateData(key: string, value: any): void {
@@ -33,6 +40,17 @@ function validateData(key: string, value: any): void {
     } catch (error) {
         throw new StorageValidationError(
             `Value for key "${key}" is not serializable: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
+    }
+
+    // Check size limit (8KB = 8192 bytes)
+    const size = getDataSize(value);
+    const MAX_SIZE = 8192;
+
+    if (size > MAX_SIZE) {
+        console.warn(`Data for key "${key}" is ${size} bytes, exceeds ${MAX_SIZE} bytes limit`);
+        throw new StorageValidationError(
+            `Data for key "${key}" is too large (${size} bytes). Maximum is ${MAX_SIZE} bytes. Consider reducing the data size.`
         );
     }
 

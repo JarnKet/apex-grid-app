@@ -184,9 +184,14 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
             const widgetData: WidgetData = {};
 
             for (const widget of widgets) {
-                const data = await storage.get<WidgetDataSchema>(`widgetData_${widget.id}`);
-                if (data) {
-                    widgetData[widget.id] = data;
+                try {
+                    const data = await storage.get<WidgetDataSchema>(`widgetData_${widget.id}`);
+                    if (data) {
+                        widgetData[widget.id] = data;
+                    }
+                } catch (error) {
+                    console.warn(`Failed to load data for widget ${widget.id}, skipping:`, error);
+                    // Skip this widget's data but continue with others
                 }
             }
 
@@ -194,8 +199,13 @@ export const useWidgetStore = create<WidgetStore>((set, get) => ({
             if (oldWidgetData && typeof oldWidgetData === 'object' && Object.keys(oldWidgetData).length > 0) {
                 console.log('Migrating widget data to new storage format...');
                 for (const [widgetId, data] of Object.entries(oldWidgetData)) {
-                    await storage.set(`widgetData_${widgetId}`, data);
-                    widgetData[widgetId] = data;
+                    try {
+                        await storage.set(`widgetData_${widgetId}`, data);
+                        widgetData[widgetId] = data;
+                    } catch (error) {
+                        console.warn(`Failed to migrate data for widget ${widgetId}, data too large. Skipping.`);
+                        // Skip oversized data, don't block migration
+                    }
                 }
                 // Remove old format
                 await storage.remove('widgetData');

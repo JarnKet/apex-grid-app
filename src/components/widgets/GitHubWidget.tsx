@@ -24,10 +24,21 @@ import {
     type GitHubStats,
 } from '../../services/githubApi';
 
+// Minimal repo data to reduce storage size
+interface MinimalRepo {
+    id: number;
+    name: string;
+    description: string | null;
+    html_url: string;
+    language: string | null;
+    stargazers_count: number;
+    forks_count: number;
+}
+
 interface GitHubWidgetData {
     username: string;
     user: GitHubUser | null;
-    repos: GitHubRepo[];
+    repos: MinimalRepo[];
     stats: GitHubStats | null;
     lastFetched: number;
 }
@@ -75,11 +86,28 @@ const GitHubWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }
                 fetchGitHubStats(user),
             ]);
 
+            // Store only essential repo data to reduce storage size
+            const minimalRepos: MinimalRepo[] = reposData.map(repo => ({
+                id: repo.id,
+                name: repo.name,
+                description: repo.description,
+                html_url: repo.html_url,
+                language: repo.language,
+                stargazers_count: repo.stargazers_count,
+                forks_count: repo.forks_count,
+            }));
+
+            // Limit contribution days to last 28 days only
+            const limitedStats = statsData ? {
+                ...statsData,
+                contributionDays: statsData.contributionDays.slice(-28),
+            } : null;
+
             const newData: GitHubWidgetData = {
                 username: user,
                 user: userData,
-                repos: reposData,
-                stats: statsData,
+                repos: minimalRepos,
+                stats: limitedStats,
                 lastFetched: Date.now(),
             };
 

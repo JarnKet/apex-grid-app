@@ -67,10 +67,18 @@ const WeatherWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange 
 
         try {
             const location = await getUserLocation();
-            const [weatherData, forecastData] = await Promise.all([
+
+            // Always fetch forecast data if showWeekly is enabled
+            const promises: [Promise<WeatherData>, Promise<ForecastDay[] | undefined>] = [
                 fetchWeather(location.latitude, location.longitude),
-                settings.showWeekly ? fetchWeatherForecast(location.latitude, location.longitude) : Promise.resolve(undefined),
-            ]);
+                settings.showWeekly
+                    ? fetchWeatherForecast(location.latitude, location.longitude)
+                    : Promise.resolve(undefined),
+            ];
+
+            const [weatherData, forecastData] = await Promise.all(promises);
+
+            console.log('Weather data fetched:', { weatherData, forecastData, showWeekly: settings.showWeekly });
 
             const newData: WeatherWidgetData = {
                 weather: weatherData,
@@ -94,9 +102,13 @@ const WeatherWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange 
     useEffect(() => {
         const shouldFetch = !lastFetched || Date.now() - lastFetched > CACHE_DURATION;
 
+        console.log('Weather widget init:', { lastFetched, shouldFetch, loading, hasWeather: !!weather });
+
         if (shouldFetch && !loading) {
+            console.log('Fetching weather data...');
             fetchWeatherData();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const weatherDesc = weather ? getWeatherDescription(weather.weatherCode) : null;
@@ -229,7 +241,7 @@ const WeatherWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange 
                 )}
 
                 {/* Error state */}
-                {error && (
+                {error && !weather && (
                     <div className="flex flex-col items-center justify-center h-full space-y-3">
                         <CloudSun className="h-8 w-8 text-muted-foreground" />
                         <p className="text-sm text-muted-foreground text-center">{error}</p>
@@ -238,9 +250,35 @@ const WeatherWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange 
                             size="sm"
                             onClick={fetchWeatherData}
                             disabled={loading}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
                         >
                             <RefreshCw className="h-3 w-3 mr-2" />
                             Try Again
+                        </Button>
+                    </div>
+                )}
+
+                {/* Empty state - no weather data */}
+                {!loading && !error && !weather && (
+                    <div className="flex flex-col items-center justify-center h-full space-y-3">
+                        <CloudSun className="h-12 w-12 text-muted-foreground" />
+                        <div className="text-center">
+                            <p className="text-sm font-medium">No Weather Data</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Click to load weather information
+                            </p>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={fetchWeatherData}
+                            disabled={loading}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
+                        >
+                            <RefreshCw className="h-3 w-3 mr-2" />
+                            Load Weather
                         </Button>
                     </div>
                 )}
@@ -302,7 +340,7 @@ const WeatherWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange 
                             </div>
                         )}
 
-                        {settings.showWeekly && !compact && forecast && (
+                        {settings.showWeekly && !compact && forecast && forecast.length > 0 && (
                             <div className="mt-4 pt-4 border-t border-border">
                                 <div className={cn(textSizes.small, "font-medium mb-3")}>7-Day Forecast</div>
                                 <div className="grid grid-cols-7 gap-1">

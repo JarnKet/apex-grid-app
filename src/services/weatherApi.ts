@@ -119,41 +119,56 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
  */
 export async function fetchWeatherForecast(latitude: number, longitude: number): Promise<ForecastDay[]> {
     try {
-        const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto`,
-            {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                },
-            }
-        );
+        // Request 7 days of forecast data with all required parameters
+        const url = new URL('https://api.open-meteo.com/v1/forecast');
+        url.searchParams.append('latitude', latitude.toString());
+        url.searchParams.append('longitude', longitude.toString());
+        url.searchParams.append('daily', 'weather_code,temperature_2m_max,temperature_2m_min');
+        url.searchParams.append('temperature_unit', 'fahrenheit');
+        url.searchParams.append('timezone', 'auto');
+        url.searchParams.append('forecast_days', '7');
+
+        const response = await fetch(url.toString(), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Forecast API error:', errorText);
             throw new Error(`Failed to fetch forecast: ${response.status}`);
         }
 
         const data = await response.json();
 
         // Check if daily data exists
-        if (!data.daily || !data.daily.time) {
+        if (!data.daily || !data.daily.time || !Array.isArray(data.daily.time)) {
+            console.error('Invalid forecast data structure:', data);
             throw new Error('No forecast data available');
         }
 
         const forecast: ForecastDay[] = [];
 
         // Get 7 days of forecast
-        for (let i = 0; i < 7 && i < data.daily.time.length; i++) {
+        const daysToFetch = Math.min(7, data.daily.time.length);
+
+        for (let i = 0; i < daysToFetch; i++) {
             const date = new Date(data.daily.time[i]);
             const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
 
             forecast.push({
                 date: data.daily.time[i],
                 dayOfWeek,
-                tempMax: Math.round(data.daily.temperature_2m_max[i]),
-                tempMin: Math.round(data.daily.temperature_2m_min[i]),
-                weatherCode: data.daily.weather_code[i],
+                tempMax: Math.round(data.daily.temperature_2m_max?.[i] || 0),
+                tempMin: Math.round(data.daily.temperature_2m_min?.[i] || 0),
+                weatherCode: data.daily.weather_code?.[i] || 0,
             });
+        }
+
+        if (forecast.length === 0) {
+            throw new Error('No forecast days available');
         }
 
         return forecast;

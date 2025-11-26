@@ -1,4 +1,5 @@
-// Quote API service for fetching quotes from Quotable.io
+// Quote API service for fetching quotes
+// Uses multiple sources with automatic fallback for reliability
 
 /**
  * Quote data structure
@@ -22,79 +23,68 @@ export class QuoteApiError extends Error {
 }
 
 /**
- * Fetch with retry logic and exponential backoff
- */
-async function fetchWithRetry(
-    url: string,
-    maxRetries: number = 3
-): Promise<Response> {
-    let lastError: Error | null = null;
-
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-            const response = await fetch(url);
-
-            if (response.ok) {
-                return response;
-            }
-
-            // If not ok, throw error with status code
-            throw new QuoteApiError(
-                `API request failed with status ${response.status}`,
-                response.status
-            );
-        } catch (error) {
-            lastError = error instanceof Error ? error : new Error('Unknown error');
-
-            // If this is the last attempt, throw the error
-            if (attempt === maxRetries - 1) {
-                break;
-            }
-
-            // Exponential backoff: wait 2^attempt seconds
-            const delayMs = Math.pow(2, attempt) * 1000;
-            console.warn(
-                `Quote API request failed (attempt ${attempt + 1}/${maxRetries}). Retrying in ${delayMs}ms...`,
-                error
-            );
-
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-        }
-    }
-
-    // All retries failed
-    throw new QuoteApiError(
-        `Failed to fetch quote after ${maxRetries} attempts: ${lastError?.message}`,
-        lastError instanceof QuoteApiError ? lastError.statusCode : undefined
-    );
-}
-
-/**
- * Fetch a random quote from ZenQuotes API (free, no API key required)
+ * Fetch a random quote from multiple sources with fallback
+ * Tries Quotable.io first, then falls back to alternative sources
  */
 export async function fetchQuote(): Promise<Quote> {
+    // Try Quotable.io first (most reliable)
     try {
-        const response = await fetchWithRetry('https://zenquotes.io/api/random');
+        const response = await fetch('https://api.quotable.io/random', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
         const data = await response.json();
 
-        // Validate response structure (ZenQuotes returns an array)
-        if (!Array.isArray(data) || !data[0] || !data[0].q || !data[0].a) {
-            throw new QuoteApiError('Invalid API response structure');
+        // Validate response structure
+        if (!data || !data.content || !data.author) {
+            throw new Error('Invalid response structure');
         }
 
         return {
-            text: data[0].q,
-            author: data[0].a
+            text: data.content,
+            author: data.author
         };
     } catch (error) {
-        // Re-throw QuoteApiError as-is
-        if (error instanceof QuoteApiError) {
-            throw error;
-        }
+        console.warn('Quotable.io failed, trying alternative source:', error);
 
-        // Wrap other errors
-        throw new QuoteApiError(
-            `Failed to fetch quote: ${error instanceof Error ? error.message : 'Unknown error'}`
-        );
+        // Fallback to DummyJSON API (reliable, no SSL issues)
+        try {
+            const response = await fetch('https://dummyjson.com/quotes/random', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Validate response structure
+            if (!data || !data.quote || !data.author) {
+                throw new Error('Invalid response structure');
+            }
+
+            return {
+                text: data.quote,
+                author: data.author
+            };
+        } catch (fallbackError) {
+            console.error('All quote APIs failed:', fallbackError);
+
+            // Throw final error
+            throw new QuoteApiError(
+                `Failed to fetch quote from all sources: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
+        }
     }
 }
