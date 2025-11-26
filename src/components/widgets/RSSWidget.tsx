@@ -40,7 +40,8 @@ const RSSWidgetComponent: React.FC<WidgetProps> = ({ id, data, onDataChange }) =
         setError(null);
 
         try {
-            const feedItems = await fetchRSSFeed(feedUrl, 10);
+            // Limit to 5 items to reduce storage size (was 10)
+            const feedItems = await fetchRSSFeed(feedUrl, 5);
 
             const newData: RSSWidgetData = {
                 items: feedItems,

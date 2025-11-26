@@ -68,13 +68,17 @@ export async function fetchRSSFeed(feedUrl: string, count: number = 10): Promise
         }
 
         // Transform the data to our format
-        return data.items.map((item: any) => ({
-            title: item.title || 'No title',
-            link: item.link || '#',
-            pubDate: item.pubDate || new Date().toISOString(),
-            description: stripHtml(item.description || ''),
-            thumbnail: item.thumbnail || item.enclosure?.link,
-        }));
+        // Limit description to 200 characters to reduce storage size
+        return data.items.map((item: any) => {
+            const description = stripHtml(item.description || '');
+            return {
+                title: item.title || 'No title',
+                link: item.link || '#',
+                pubDate: item.pubDate || new Date().toISOString(),
+                description: description.length > 200 ? description.substring(0, 200) + '...' : description,
+                thumbnail: item.thumbnail || item.enclosure?.link,
+            };
+        });
     } catch (error) {
         console.error('Failed to fetch RSS feed:', error);
         throw error;
