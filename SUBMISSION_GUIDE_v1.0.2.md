@@ -17,6 +17,66 @@
 
 ---
 
+## 🌐 API Endpoints Used in Version 1.0.2
+
+ApexGrid uses the following external APIs to provide its widget functionality:
+
+### Core Widget APIs
+
+1. **Quotable.io** - Daily Quotes Widget
+
+   - Endpoint: `https://api.quotable.io/*`
+   - Purpose: Provides inspirational daily quotes
+   - Data: Quote text, author information
+
+2. **RSS2JSON** - News Feed Widget
+
+   - Endpoint: `https://api.rss2json.com/*`
+   - Purpose: Converts RSS feeds to JSON format for news display
+   - Data: News articles from various RSS feeds
+
+3. **CoinGecko** - Cryptocurrency Widget
+
+   - Endpoint: `https://api.coingecko.com/*`
+   - Purpose: Real-time cryptocurrency prices and market data
+   - Data: Crypto prices, market caps, 24h changes
+
+4. **Open-Meteo** - Weather Widget
+
+   - Endpoint: `https://api.open-meteo.com/*`
+   - Purpose: Provides weather forecasts and current conditions
+   - Data: Temperature, weather conditions, forecasts
+
+5. **Picsum Photos** - Background Images
+   - Endpoint: `https://picsum.photos/*`
+   - Purpose: Random beautiful background images
+   - Data: High-quality images for dashboard backgrounds
+
+### Supporting APIs
+
+6. **IPAPI.co** - Geolocation Service
+
+   - Endpoint: `https://ipapi.co/*`
+   - Purpose: Location detection for weather widget
+   - Data: City, country, coordinates
+
+7. **GitHub API** - Version Updates (Optional)
+
+   - Endpoint: `https://api.github.com/*`
+   - Purpose: Check for extension updates
+   - Data: Repository information
+
+8. **Spotify API** - Music Widget
+   - Endpoints:
+     - `https://accounts.spotify.com/*` (Authentication)
+     - `https://api.spotify.com/*` (Playback & data)
+   - Purpose: Display currently playing music and playback controls
+   - Data: Track info, playback state, user playlists
+
+**Privacy Note**: All API calls are made directly from the extension. No user data is stored on external servers. All preferences and settings are saved locally using Chrome's storage API.
+
+---
+
 ## 🚀 Submission Steps
 
 ### 1. Pre-Submission Checklist
@@ -76,12 +136,37 @@ In the **"Store Listing"** tab, update:
 
 #### Privacy Practices
 
-Ensure the following are clearly stated:
+Ensure the following are clearly stated in your Chrome Web Store listing:
 
-- **Data Collection**: Location (for weather), Spotify authentication, RSS feeds
-- **Data Usage**: All data used only for widget functionality
-- **Data Storage**: Stored locally using Chrome storage API
-- **Third-party Services**: Spotify API, Weather API, RSS feeds
+- **Data Collection**:
+
+  - Location data (via ipapi.co) for weather widget personalization
+  - Spotify authentication tokens for music widget (stored locally)
+  - User-added custom RSS feed URLs
+  - Widget preferences and settings
+
+- **Data Usage**:
+
+  - All data used exclusively for widget functionality
+  - No data is sent to external servers except for API calls to provide services
+  - No tracking or analytics of user behavior
+  - No data sharing with third parties beyond necessary API calls
+
+- **Data Storage**:
+
+  - All user data stored locally using Chrome's storage API
+  - No cloud storage or external databases used
+  - Users can clear all data by removing the extension
+
+- **Third-party Services**:
+  - **Quotable.io**: Daily quotes (no personal data sent)
+  - **RSS2JSON**: RSS feed conversion (feed URLs only)
+  - **CoinGecko**: Cryptocurrency prices (no personal data sent)
+  - **Open-Meteo**: Weather data (location coordinates only)
+  - **Picsum Photos**: Background images (no personal data sent)
+  - **IPAPI.co**: Location detection (IP address only)
+  - **GitHub API**: Version checks (no personal data sent)
+  - **Spotify API**: Music playback (requires user authentication, tokens stored locally)
 
 #### Permissions Justification
 

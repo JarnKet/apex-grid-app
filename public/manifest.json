@@ -9,7 +9,6 @@
   "permissions": ["storage", "geolocation", "identity"],
   "host_permissions": [
     "https://api.quotable.io/*",
-    "https://dummyjson.com/*",
     "https://api.rss2json.com/*",
     "https://api.coingecko.com/*",
     "https://api.open-meteo.com/*",

@@ -80,6 +80,25 @@ src/
 └── lib/                 # Utilities
 ```
 
+## Documentation
+
+- **[API_ENDPOINTS.md](./API_ENDPOINTS.md)** - Complete documentation of all external APIs used
+- **[SUBMISSION_GUIDE_v1.0.2.md](./SUBMISSION_GUIDE_v1.0.2.md)** - Chrome Web Store submission guide
+- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and changes
+- **[EXTENSION_TESTING.md](./EXTENSION_TESTING.md)** - Testing instructions
+
+## Privacy & Security
+
+ApexGrid respects your privacy:
+
+- ✅ All data stored locally using Chrome storage API
+- ✅ No external servers or databases
+- ✅ No tracking or analytics
+- ✅ No data sharing with third parties
+- ✅ Open source and transparent
+
+See [API_ENDPOINTS.md](./API_ENDPOINTS.md) for detailed information about external APIs used.
+
 ## License
 
 MIT
