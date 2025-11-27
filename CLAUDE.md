@@ -24,8 +24,17 @@ This document provides comprehensive guidance for AI assistants working on the A
 ### Key Features
 - Drag-and-drop widget positioning with persistent layouts
 - Resizable widgets with react-grid-layout
-- Multiple widget types: Clock, Calendar, Todo, Quick Links, Quote, Currency
-- Dark/light theme support with time-based gradients
+- 32+ widget types including:
+  - **Core Widgets**: Clock, Calendar, Todo, Quick Links, Quote, RSS Feed
+  - **Financial**: Currency Exchange, Crypto Tracker, TradingView (Ticker, Chart, Mini, Market)
+  - **Productivity**: Pomodoro Timer, Counter, Countdown, Life Progress, API Tester
+  - **Lifestyle**: Water Tracker, Meditation Timer, Horoscope, Dictionary
+  - **Integration**: Spotify (with OAuth), GitHub Activity, Weather
+  - **Utilities**: World Clock, Unit Converter, QR Code Generator, Color Palette, Unsplash Images, Location
+- Advanced theme system with 50+ customizable themes
+- Widget Gallery for easy widget discovery and addition
+- Preset Layouts for quick dashboard setup
+- Dark/light mode support with dynamic backgrounds
 - Cross-device sync via Chrome Storage API
 - Full accessibility support with ARIA labels and keyboard navigation
 - Reduced motion support for accessibility
@@ -49,10 +58,13 @@ This document provides comprehensive guidance for AI assistants working on the A
 ### Key Libraries
 - **react-grid-layout 1.4.4** - Drag-and-drop grid system
 - **Zustand 5.0.2** - Lightweight state management
-- **Radix UI** - Accessible UI primitives (Dialog, Switch)
-- **lucide-react** - Icon library
+- **Radix UI** - Accessible UI primitives (Dialog, Switch, Checkbox, Label)
+- **lucide-react 0.553.0** - Icon library
+- **react-icons 5.5.0** - Additional icon library
 - **date-fns 4.1.0** - Date manipulation
+- **recharts 2.15.4** - Chart components for data visualization
 - **clsx + tailwind-merge** - Conditional className utilities
+- **class-variance-authority 0.7.1** - Component variant management
 
 ### Development Tools
 - **Vitest 4** - Unit testing framework
@@ -63,13 +75,14 @@ This document provides comprehensive guidance for AI assistants working on the A
 ### Chrome APIs
 - **chrome.storage.sync** - Cross-device data persistence
 - **chrome.tabs** - New tab override functionality
+- **chrome.identity** - OAuth 2.0 authentication (for Spotify integration)
 
 ---
 
 ## Codebase Structure
 
 ```
-/home/user/apex-grid-app/
+D:\Code Playground\apex-grid-app\
 ├── public/
 │   ├── manifest.json          # Chrome extension manifest (v3)
 │   └── icons/                 # Extension icons (16, 48, 128)
@@ -84,30 +97,69 @@ This document provides comprehensive guidance for AI assistants working on the A
 │   │   │   ├── Dialog.tsx
 │   │   │   ├── Input.tsx
 │   │   │   ├── Checkbox.tsx
-│   │   │   └── Switch.tsx
-│   │   ├── widgets/           # Widget implementations
+│   │   │   ├── Switch.tsx
+│   │   │   ├── label.tsx
+│   │   │   └── chart.tsx      # Recharts wrapper components
+│   │   ├── widgets/           # Widget implementations (32+ widgets)
 │   │   │   ├── CalendarWidget.tsx
 │   │   │   ├── ClockWidget.tsx
 │   │   │   ├── CurrencyWidget.tsx
 │   │   │   ├── QuickLinksWidget.tsx
 │   │   │   ├── QuoteWidget.tsx
 │   │   │   ├── TodoWidget.tsx
+│   │   │   ├── RSSWidget.tsx
+│   │   │   ├── WeatherWidget.tsx
+│   │   │   ├── SpotifyWidget.tsx (OAuth integration)
+│   │   │   ├── GitHubWidget.tsx
+│   │   │   ├── CryptoWidget.tsx
+│   │   │   ├── HoroscopeWidget.tsx
+│   │   │   ├── PomodoroWidget.tsx
+│   │   │   ├── WorldClockWidget.tsx
+│   │   │   ├── CurrencyConverterWidget.tsx
+│   │   │   ├── UnitConverterWidget.tsx
+│   │   │   ├── QRCodeWidget.tsx
+│   │   │   ├── WaterTrackerWidget.tsx
+│   │   │   ├── DictionaryWidget.tsx
+│   │   │   ├── ColorPaletteWidget.tsx
+│   │   │   ├── MeditationWidget.tsx
+│   │   │   ├── LocationWidget.tsx
+│   │   │   ├── APITesterWidget.tsx
+│   │   │   ├── UnsplashWidget.tsx
+│   │   │   ├── LifeProgressWidget.tsx
+│   │   │   ├── CounterWidget.tsx
+│   │   │   ├── CountdownWidget.tsx
+│   │   │   ├── TradingViewTickerWidget.tsx
+│   │   │   ├── TradingViewChartWidget.tsx
+│   │   │   ├── TradingViewMiniWidget.tsx
+│   │   │   ├── TradingViewMarketWidget.tsx
 │   │   │   └── index.ts       # Widget exports
 │   │   ├── Dashboard.tsx      # Main dashboard container
 │   │   ├── ErrorBoundary.tsx  # Error handling wrapper
 │   │   ├── GridLayout.tsx     # react-grid-layout wrapper
 │   │   ├── Greeting.tsx       # Time-based greeting component
-│   │   ├── SettingsPanel.tsx  # Settings UI with theme toggle
+│   │   ├── SettingsPanel.tsx  # Settings UI with theme selector
 │   │   ├── WidgetRenderer.tsx # Widget factory component
-│   │   └── WidgetWrapper.tsx  # Shared widget container
+│   │   ├── WidgetWrapper.tsx  # Shared widget container
+│   │   ├── WidgetGallery.tsx  # Widget selection gallery
+│   │   └── PresetSelector.tsx # Preset layout selector
 │   ├── lib/
 │   │   ├── utils.ts           # Utility functions (cn helper)
-│   │   ├── timeBasedGradients.ts  # Dynamic background gradients
-│   │   └── useKeyboardNavigation.ts  # Keyboard accessibility
+│   │   ├── themes.ts          # Theme definitions (50+ themes)
+│   │   ├── backgroundPatterns.ts  # Dynamic background patterns
+│   │   ├── presetLayouts.ts   # Preset dashboard layouts
+│   │   ├── widgetDefaults.ts  # Default widget configurations
+│   │   ├── useKeyboardNavigation.ts  # Keyboard accessibility
+│   │   └── useWidgetSize.ts   # Widget size management hook
 │   ├── services/
 │   │   ├── storage.ts         # Chrome Storage API abstraction
 │   │   ├── quoteApi.ts        # Quote fetching service
-│   │   └── currencyApi.ts     # Currency exchange API
+│   │   ├── currencyApi.ts     # Currency exchange API
+│   │   ├── weatherApi.ts      # Weather data API
+│   │   ├── spotifyApi.ts      # Spotify OAuth & API integration
+│   │   ├── githubApi.ts       # GitHub activity API
+│   │   ├── horoscopeApi.ts    # Horoscope data API
+│   │   ├── cryptoApi.ts       # Cryptocurrency data API
+│   │   └── rssApi.ts          # RSS feed parser
 │   ├── stores/                # Zustand state management
 │   │   ├── useLayoutStore.ts  # Grid layout state
 │   │   ├── useSettingsStore.ts  # App settings (theme, etc.)
@@ -503,8 +555,21 @@ describe('useLayoutStore', () => {
 Key aspects:
 - `manifest_version: 3` - Uses latest Chrome extension standard
 - `chrome_url_overrides.newtab` - Replaces new tab page
-- `permissions: ["storage"]` - Chrome Storage API access
-- `host_permissions` - API endpoints for CORS bypass
+- `permissions`:
+  - `storage` - Chrome Storage API for data persistence
+  - `geolocation` - Location data for Weather and Location widgets
+  - `identity` - OAuth 2.0 for Spotify authentication
+- `host_permissions` - API endpoints for CORS bypass:
+  - `api.quotable.io` - Quote API
+  - `dummyjson.com` - Horoscope and other data
+  - `api.rss2json.com` - RSS feed parsing
+  - `api.coingecko.com` - Cryptocurrency data
+  - `api.open-meteo.com` - Weather data
+  - `picsum.photos` - Unsplash images
+  - `ipapi.co` - IP-based location
+  - `api.github.com` - GitHub activity
+  - `accounts.spotify.com` & `api.spotify.com` - Spotify OAuth & API
+- `content_security_policy` - Allows TradingView and Spotify iframes
 
 ### Chrome Storage API
 
@@ -514,11 +579,20 @@ Key aspects:
 - **Max items:** ~512 items
 - **Sync frequency:** Automatically synced across devices
 
+**CRITICAL: Storage Optimization**
+Due to the 102KB limit, ApexGrid implements several optimization strategies:
+- Widget data is stored separately from widget configuration
+- Large data items (themes, TradingView configs) are kept in code, not storage
+- Unused widgets are removed from storage to free space
+- Regular cleanup of stale data
+- See `STORAGE_QUOTA_FIX.md` for detailed optimization strategies
+
 **Storage Keys Used:**
 - `layout` - Grid layout configuration (array)
 - `widgets` - Widget list with enabled states (array)
 - `widgetData` - Widget-specific data (object with widget IDs as keys)
 - `settings` - App settings like theme (object)
+- `spotifyTokens` - Spotify OAuth tokens (if authenticated)
 
 ### Build Process
 
@@ -556,6 +630,75 @@ dist/
 4. Check console for errors: DevTools → Console
 5. Check storage: DevTools → Application → Storage → Chrome Storage
 
+### Chrome Web Store Compliance
+ApexGrid follows strict Chrome Web Store policies:
+- **No remote code execution**: All code is bundled, no eval() or Function()
+- **Secure OAuth**: Spotify OAuth uses chrome.identity API
+- **Privacy compliance**: No tracking, no analytics, no external data collection
+- **Content Security Policy**: Strict CSP in manifest.json
+- **Permissions justification**: Only requests necessary permissions (storage, identity)
+- See `CHROME_STORE_POLICY_FIX.md` and `POLICY_COMPLIANCE_SUMMARY.md` for details
+
+---
+
+## New Features in v1.0+
+
+### Widget Gallery
+The Widget Gallery (`src/components/WidgetGallery.tsx`) provides a visual interface for users to browse and add widgets to their dashboard. Features:
+- Categorized widget display (Productivity, Lifestyle, Financial, etc.)
+- Search functionality
+- Preview of widget functionality
+- One-click widget addition
+- Accessible via Settings Panel
+
+### Theme System
+ApexGrid now includes an advanced theme system (`src/lib/themes.ts`) with 50+ pre-configured themes:
+- **Categories**: Sunset, Ocean, Forest, Neon, Minimal, Pastel, Vibrant, Dark, Gradient
+- **Dynamic backgrounds**: Pattern-based backgrounds with customizable colors
+- **Full dark mode support**: All themes work in both light and dark modes
+- **Theme persistence**: Saved to Chrome Storage and synced across devices
+
+### Preset Layouts
+Users can choose from pre-configured dashboard layouts (`src/lib/presetLayouts.ts`):
+- **Minimal**: Simple clock and date layout
+- **Productivity**: Focus on tasks and time management
+- **Developer**: GitHub, API tester, and coding tools
+- **Financial**: Crypto, currency, and TradingView widgets
+- **Lifestyle**: Weather, horoscope, meditation, water tracking
+
+### Spotify Integration
+Full OAuth 2.0 integration with Spotify API (`src/services/spotifyApi.ts`):
+- Display currently playing track
+- Playback controls (play, pause, skip)
+- Album artwork display
+- Artist and track information
+- Secure token management via chrome.identity
+- See `SPOTIFY_OAUTH_SETUP.md` and `SPOTIFY_WIDGET_SETUP.md` for setup instructions
+
+### Weather Widget
+Real-time weather data integration:
+- Current weather conditions
+- Temperature, humidity, wind speed
+- Weather icons
+- Location-based forecasts
+- API key required (stored securely in Chrome Storage)
+
+### TradingView Integration
+Embedded TradingView widgets for financial markets:
+- **Ticker Widget**: Real-time price tickers
+- **Chart Widget**: Interactive price charts
+- **Mini Widget**: Compact market overview
+- **Market Widget**: Market summary dashboard
+- All widgets use TradingView's official embed code
+
+### GitHub Activity Widget
+Display GitHub contribution activity:
+- Repository activity
+- Recent commits
+- Contribution graphs
+- Public profile data
+- Configurable username
+
 ---
 
 ## Common Tasks & Examples
@@ -588,7 +731,14 @@ export { NewWidget } from './NewWidget';
 
 3. **Add Widget Type** (`src/types/widget.ts`):
 ```typescript
-export type WidgetType = 'clock' | 'calendar' | 'todo' | 'quicklinks' | 'quote' | 'currency' | 'new';
+export type WidgetType =
+    | 'clock' | 'calendar' | 'todo' | 'quicklinks' | 'quote' | 'rss'
+    | 'weather' | 'pomodoro' | 'tradingview-ticker' | 'tradingview-chart'
+    | 'tradingview-mini' | 'tradingview-market' | 'spotify' | 'horoscope'
+    | 'github' | 'worldclock' | 'currency' | 'water' | 'qrcode'
+    | 'unitconverter' | 'dictionary' | 'unsplash' | 'colorpalette'
+    | 'meditation' | 'location' | 'apitester' | 'lifeprogress'
+    | 'counter' | 'countdown' | 'new'; // Add your new widget type
 ```
 
 4. **Add to Widget Renderer** (`src/components/WidgetRenderer.tsx`):
@@ -597,9 +747,25 @@ case 'new':
     return <NewWidget id={widget.id} />;
 ```
 
-5. **Add to Default Widgets** (if needed) - Update `DEFAULT_WIDGETS` in `src/types/widget.ts` or relevant store.
+5. **Add to Widget Gallery** (`src/components/WidgetGallery.tsx`):
+```typescript
+// Add to appropriate category
+{
+    type: 'new',
+    name: 'New Widget',
+    description: 'Description of what this widget does',
+    icon: <Icon className="w-6 h-6" />,
+    category: 'Productivity' // or Lifestyle, Financial, Utilities, Integration
+}
+```
 
-6. **Create Tests** (`src/components/widgets/NewWidget.test.tsx`):
+6. **Add Default Configuration** (`src/lib/widgetDefaults.ts`):
+```typescript
+case 'new':
+    return { w: 4, h: 3, minW: 2, minH: 2 };
+```
+
+7. **Create Tests** (`src/components/widgets/NewWidget.test.tsx`):
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -721,6 +887,79 @@ if (!data) {
 }
 ```
 
+### Widget-Specific Best Practices
+
+**For API-Based Widgets** (Weather, GitHub, Crypto, etc.):
+- Implement caching with timestamp to reduce API calls
+- Add loading states to show data is being fetched
+- Handle network errors gracefully with fallback UI
+- Respect API rate limits (use exponential backoff if needed)
+- Store cached data in widgetData via onDataChange callback
+
+Example pattern:
+```typescript
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+useEffect(() => {
+    const fetchData = async () => {
+        // Check cache first
+        if (data && Date.now() - data.timestamp < CACHE_DURATION) {
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await apiCall();
+            onDataChange?.({ ...result, timestamp: Date.now() });
+        } catch (err) {
+            setError('Failed to load data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchData();
+}, []);
+```
+
+**For OAuth Widgets** (Spotify):
+- Use chrome.identity.launchWebAuthFlow for OAuth
+- Store tokens in chrome.storage.sync
+- Implement token refresh logic
+- Handle authentication errors with clear UI
+- Provide logout functionality
+- See `SPOTIFY_OAUTH_SETUP.md` for reference implementation
+
+**For Embedded Content Widgets** (TradingView):
+- Use iframe with proper CSP configuration
+- Add iframe URLs to content_security_policy in manifest
+- Implement loading states while iframe loads
+- Handle iframe errors and timeouts
+- Provide fallback content if embed fails
+
+**For User Input Widgets** (Todo, Quick Links, Counter):
+- Validate user input before storing
+- Implement optimistic UI updates for better UX
+- Debounce storage writes to avoid quota issues
+- Provide clear feedback for actions (add, delete, edit)
+- Implement undo functionality when appropriate
+
+**For Timer Widgets** (Pomodoro, Meditation, Countdown):
+- Use setInterval for timer updates
+- Clear intervals on component unmount
+- Store timer state in localStorage for persistence
+- Provide audio/visual notifications when timer completes
+- Support pause/resume functionality
+
+**For Data Visualization Widgets** (Life Progress, Crypto Charts):
+- Use Recharts components from `src/components/ui/chart.tsx`
+- Optimize data before rendering (reduce points if needed)
+- Add responsive sizing with useWidgetSize hook
+- Provide tooltips for data points
+- Support different time ranges/views
+
 ### Handling API Integrations
 
 1. **Create Service File** (`src/services/newApi.ts`):
@@ -817,8 +1056,18 @@ export async function fetchWithCache(widgetId: string): Promise<ApiResponse> {
 | `src/services/storage.ts` | Chrome Storage wrapper | `storage.get`, `storage.set` |
 | `src/services/quoteApi.ts` | Quote fetching | `fetchQuote` |
 | `src/services/currencyApi.ts` | Currency exchange | `fetchCurrencyRates` |
+| `src/services/weatherApi.ts` | Weather data | `fetchWeather` |
+| `src/services/spotifyApi.ts` | Spotify OAuth & API | `authenticateSpotify`, `fetchNowPlaying` |
+| `src/services/githubApi.ts` | GitHub activity | `fetchGitHubActivity` |
+| `src/services/horoscopeApi.ts` | Horoscope data | `fetchHoroscope` |
+| `src/services/cryptoApi.ts` | Cryptocurrency | `fetchCryptoData` |
+| `src/services/rssApi.ts` | RSS feed parser | `fetchRSSFeed` |
 | `src/lib/utils.ts` | Utility functions | `cn` (className merge) |
-| `src/lib/timeBasedGradients.ts` | Dynamic backgrounds | Time-based gradient logic |
+| `src/lib/themes.ts` | Theme system | 50+ theme definitions |
+| `src/lib/backgroundPatterns.ts` | Dynamic backgrounds | Background pattern logic |
+| `src/lib/presetLayouts.ts` | Preset layouts | Pre-configured dashboard layouts |
+| `src/lib/widgetDefaults.ts` | Widget defaults | Default widget configurations |
+| `src/lib/useWidgetSize.ts` | Widget sizing | Widget size management hook |
 | `src/lib/useKeyboardNavigation.ts` | Keyboard a11y | Keyboard navigation hook |
 
 ### Type Definitions
@@ -834,19 +1083,41 @@ export async function fetchWithCache(widgetId: string): Promise<ApiResponse> {
 | File | Purpose |
 |------|---------|
 | `README.md` | Project overview and setup |
-| `BUILD_GUIDE.md` | Detailed build instructions |
-| `EXTENSION_TESTING.md` | Chrome extension testing guide |
-| `ACCESSIBILITY.md` | Accessibility documentation |
-| `ACCESSIBILITY_FEATURES.md` | Accessibility feature details |
-| `ACCESSIBILITY_IMPLEMENTATION.md` | Implementation guide |
-| `QUICK_TEST_STEPS.md` | Quick testing checklist |
-| `VISUAL_DESIGN_TEST_GUIDE.md` | Visual design testing |
-| `RESIZE_PERSISTENCE_TEST_GUIDE.md` | Widget resize testing |
-| `REDUCED_MOTION_TESTING.md` | Motion preference testing |
+| `CLAUDE.md` | AI assistant guide (this file) |
+| `WARP.md` | Warp terminal specific documentation |
+| `SPOTIFY_OAUTH_SETUP.md` | Spotify OAuth integration guide |
+| `SPOTIFY_WIDGET_SETUP.md` | Spotify widget configuration |
+| `CHROME_STORE_SUBMISSION.md` | Chrome Web Store submission guide |
+| `CHROME_STORE_POLICY_FIX.md` | Policy compliance fixes |
+| `POLICY_COMPLIANCE_SUMMARY.md` | Compliance requirements summary |
+| `RESUBMISSION_CHECKLIST.md` | Pre-submission checklist |
+| `STORAGE_QUOTA_FIX.md` | Storage optimization guide |
+| `UPDATE_GUIDE.md` | Version update instructions |
 
 ---
 
 ## Tips for AI Assistants
+
+### Before Starting Any Task
+
+1. **Understand the context:**
+   - This is a Chrome extension with strict security policies
+   - Storage is limited to 102KB - optimize data structures
+   - All API calls must have host_permissions in manifest
+   - OAuth must use chrome.identity, not popup windows
+   - No remote code execution allowed
+
+2. **Check existing implementations:**
+   - Look for similar widgets before creating new ones
+   - Review existing API services for patterns
+   - Check how other widgets handle caching and errors
+   - Follow established patterns for consistency
+
+3. **Plan storage usage:**
+   - Estimate data size before implementing
+   - Use widgetData for widget-specific storage
+   - Keep theme data in code, not storage
+   - Implement cleanup for stale data
 
 ### When Making Changes
 
@@ -854,49 +1125,87 @@ export async function fetchWithCache(widgetId: string): Promise<ApiResponse> {
    - Check existing patterns in similar files
    - Review type definitions before modifying
    - Read tests to understand expected behavior
+   - Check CLAUDE.md sections relevant to your task
 
 2. **Maintain consistency:**
    - Follow existing naming conventions
    - Match code style (formatting, imports, etc.)
    - Use established patterns (store structure, component layout)
+   - Follow the component structure example in this document
 
 3. **Test your changes:**
    - Write tests for new functionality
    - Run existing tests to ensure nothing breaks
    - Test in actual Chrome extension environment when possible
+   - Test both light and dark modes
+   - Test with different screen sizes
+   - Check Chrome Storage quota usage
 
 4. **Update documentation:**
-   - Update this file if adding new patterns
+   - Update this file (CLAUDE.md) if adding new patterns
    - Update README.md if changing user-facing features
    - Add JSDoc comments to new exports
+   - Update relevant .md files for major features
 
 ### Common Pitfalls to Avoid
 
 1. **Chrome API Assumptions:**
    - Don't assume `localStorage` works - use `chrome.storage`
-   - Remember storage quota limits
+   - Remember storage quota limits (102KB for sync storage)
    - Handle storage errors gracefully
+   - Don't store large objects - optimize data structures
+   - Use `chrome.storage.sync` for user settings, not `chrome.storage.local`
 
 2. **State Management:**
    - Don't bypass stores for Chrome Storage access
    - Always validate data before storage writes
    - Don't forget error handling in async store actions
+   - Avoid circular dependencies between stores
+   - Use Zustand's `get()` method to access other store values
 
 3. **Styling:**
-   - Avoid hardcoded colors - use theme tokens
-   - Don't forget dark mode support
-   - Test responsive behavior
+   - Avoid hardcoded colors - use theme tokens from `themes.ts`
+   - Don't forget dark mode support (test both modes)
+   - Test responsive behavior on different screen sizes
+   - Use Tailwind's semantic classes (bg-background, text-foreground)
+   - Avoid inline styles - use Tailwind utility classes
 
 4. **Performance:**
-   - Memoize widgets with `React.memo()`
-   - Avoid unnecessary re-renders
+   - Memoize widgets with `React.memo()` to prevent re-renders
+   - Avoid unnecessary re-renders by using proper dependency arrays
    - Use lazy loading for heavy components if needed
+   - Debounce API calls and storage writes
+   - Cache API responses when possible
 
 5. **Accessibility:**
    - Add ARIA labels to interactive elements
-   - Ensure keyboard navigation works
+   - Ensure keyboard navigation works (Tab, Enter, Escape)
    - Test with screen readers when possible
    - Support reduced motion preferences
+   - Use semantic HTML elements (button, nav, etc.)
+
+6. **Widget Development:**
+   - Always export widgets from `src/components/widgets/index.ts`
+   - Add widget type to `WidgetType` union in `src/types/widget.ts`
+   - Register widget in `WidgetRenderer.tsx` switch statement
+   - Add widget to `widgetDefaults.ts` for default configuration
+   - Consider widget size constraints (minW, minH in grid layout)
+   - Test widget behavior when resized to minimum dimensions
+
+7. **API Integration:**
+   - Add API endpoint to `host_permissions` in manifest.json
+   - Implement error handling for network failures
+   - Add loading states for async operations
+   - Cache responses to reduce API calls
+   - Respect API rate limits
+   - Never expose API keys in client code - use environment variables or user input
+
+8. **OAuth & Security:**
+   - Use `chrome.identity` API for OAuth flows (not popup windows)
+   - Store tokens securely in chrome.storage
+   - Handle token expiration and refresh
+   - Never log sensitive data (tokens, API keys)
+   - Follow Chrome Web Store security policies
 
 ### Quick Reference Commands
 
@@ -928,6 +1237,66 @@ import { Widget } from '../../types/widget';
 import { Button } from '../ui/Button';
 ```
 
+### Troubleshooting Common Issues
+
+**Issue: "QUOTA_BYTES_PER_ITEM quota exceeded"**
+- **Cause**: A single storage item exceeds 8,192 bytes
+- **Solution**: Break data into smaller chunks or optimize data structure
+- **Reference**: See `STORAGE_QUOTA_FIX.md` for optimization strategies
+
+**Issue: "QUOTA_BYTES quota exceeded"**
+- **Cause**: Total storage exceeds 102,400 bytes
+- **Solution**: Remove unused widgets, clear stale data, optimize theme storage
+- **Reference**: See `STORAGE_QUOTA_FIX.md`
+
+**Issue: Widgets not rendering after adding new widget type**
+- **Cause**: Missing export or missing case in WidgetRenderer
+- **Solution**:
+  1. Check widget is exported in `src/components/widgets/index.ts`
+  2. Verify case statement exists in `WidgetRenderer.tsx`
+  3. Confirm WidgetType includes new type in `src/types/widget.ts`
+
+**Issue: Spotify widget not authenticating**
+- **Cause**: OAuth configuration missing or invalid
+- **Solution**:
+  1. Check Spotify Client ID in manifest.json
+  2. Verify redirect URI matches extension ID
+  3. See `SPOTIFY_OAUTH_SETUP.md` for complete setup
+  4. Check chrome.identity permissions in manifest
+
+**Issue: Layout not persisting after refresh**
+- **Cause**: Storage write failure or data validation error
+- **Solution**:
+  1. Check browser console for storage errors
+  2. Verify layout data structure matches `Layout` type
+  3. Test storage quota with DevTools → Application → Storage
+
+**Issue: API calls failing with CORS errors**
+- **Cause**: Missing host_permissions in manifest.json
+- **Solution**: Add API endpoint to `host_permissions` array in manifest.json
+
+**Issue: Dark mode colors not working**
+- **Cause**: Using hardcoded colors instead of theme tokens
+- **Solution**: Replace hardcoded colors with Tailwind theme classes:
+  - Use `bg-background` instead of `bg-white`
+  - Use `text-foreground` instead of `text-black`
+  - Check `src/lib/themes.ts` for available tokens
+
+**Issue: Widget not updating after data change**
+- **Cause**: Missing dependency in useEffect or memo preventing re-render
+- **Solution**:
+  1. Check useEffect dependency arrays
+  2. Verify React.memo() is comparing props correctly
+  3. Use React DevTools to debug re-renders
+
+**Issue: Extension not loading after build**
+- **Cause**: Build errors or manifest.json not copied
+- **Solution**:
+  1. Run `pnpm run verify` to check build output
+  2. Check dist/ folder contains manifest.json
+  3. Review browser console for load errors
+  4. Verify all required files are in dist/
+
 ### Getting Help
 
 If you encounter issues or need clarification:
@@ -935,11 +1304,14 @@ If you encounter issues or need clarification:
 2. Review similar existing implementations
 3. Check the test files for usage examples
 4. Consult the Chrome Extension documentation for API questions
+5. Review the Troubleshooting section above
+6. Check browser DevTools console for errors
+7. Inspect Chrome Storage in DevTools → Application → Storage
 
 ---
 
-**Last Updated:** 2025-11-15
-**Project Version:** 0.0.0
+**Last Updated:** 2025-11-26
+**Project Version:** 1.0.2
 **Maintained By:** AI Assistants and Human Developers
 
 This document should be updated whenever significant architectural changes, new patterns, or important conventions are introduced to the codebase.

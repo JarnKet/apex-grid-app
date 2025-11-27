@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Dashboard } from './components/Dashboard';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { useSettingsStore } from './stores/useSettingsStore';
-import { useLayoutStore } from './stores/useLayoutStore';
-import { useWidgetStore } from './stores/useWidgetStore';
+import { useEffect, useState } from "react";
+import { Dashboard } from "./components/Dashboard";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useSettingsStore } from "./stores/useSettingsStore";
+import { useLayoutStore } from "./stores/useLayoutStore";
+import { useWidgetStore } from "./stores/useWidgetStore";
+import { Toaster } from "./components/ui/sonner";
 
 /**
  * App component - root component for ApexGrid
@@ -16,9 +17,12 @@ function App() {
   const [isInitializing, setIsInitializing] = useState(true);
   const [initError, setInitError] = useState<string | null>(null);
 
-  const { isInitialized: settingsInitialized, initializeSettings } = useSettingsStore();
-  const { isInitialized: layoutInitialized, initializeLayout } = useLayoutStore();
-  const { isInitialized: widgetsInitialized, initializeWidgets } = useWidgetStore();
+  const { isInitialized: settingsInitialized, initializeSettings } =
+    useSettingsStore();
+  const { isInitialized: layoutInitialized, initializeLayout } =
+    useLayoutStore();
+  const { isInitialized: widgetsInitialized, initializeWidgets } =
+    useWidgetStore();
 
   /**
    * Initialize all stores from Chrome Storage on app load
@@ -38,8 +42,10 @@ function App() {
 
         setIsInitializing(false);
       } catch (error) {
-        console.error('Failed to initialize app:', error);
-        setInitError(error instanceof Error ? error.message : 'Unknown error occurred');
+        console.error("Failed to initialize app:", error);
+        setInitError(
+          error instanceof Error ? error.message : "Unknown error occurred"
+        );
         setIsInitializing(false);
       }
     };
@@ -48,7 +54,12 @@ function App() {
   }, [initializeSettings, initializeLayout, initializeWidgets]);
 
   // Show loading state while stores are initializing
-  if (isInitializing || !settingsInitialized || !layoutInitialized || !widgetsInitialized) {
+  if (
+    isInitializing ||
+    !settingsInitialized ||
+    !layoutInitialized ||
+    !widgetsInitialized
+  ) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
@@ -109,6 +120,7 @@ function App() {
       <a href="#main-content" className="skip-to-main">
         Skip to main content
       </a>
+      <Toaster richColors />
       <Dashboard />
     </ErrorBoundary>
   );
